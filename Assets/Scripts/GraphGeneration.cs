@@ -14,18 +14,17 @@ using System.Security.AccessControl;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.UIElements;
 using Microsoft.MixedReality.Toolkit;
+using System.Security.Cryptography;
 
 public class GraphGeneration : MonoBehaviour
 {
-    public  List<SceneObject_Unity> SceneObjects = new List<SceneObject_Unity>(); //Store sceneObjects output from MyScene
-    public  List<Relation> Relations = new List<Relation>(); //Store relations output from MyScene
+    public List<SceneObject_Unity> SceneObjects = new List<SceneObject_Unity>(); //Store sceneObjects output from MyScene
+    public List<Relation> Relations = new List<Relation>(); //Store relations output from MyScene
     public List<SceneObject_Unity> GameSceneObjects = new List<SceneObject_Unity>(); //Store sceneObjects output from MyScene
     public List<Relation> GameRelations = new List<Relation>(); //Store relations output from MyScene
     public Dictionary<ObjectNodeData, SceneObject_Unity> object_unity_Dict = new Dictionary<ObjectNodeData, SceneObject_Unity>();
     public Dictionary<SceneObject_Unity, ObjectNodeData> unity_object_Dict = new Dictionary<SceneObject_Unity, ObjectNodeData>();
     public Dictionary<string, SceneObject_Unity> Node_Dict = new Dictionary<string, SceneObject_Unity>();
-    public GameObject Title;
-    private TMP_Text TMP;
     ObjectAutoPlace objectAutoPlace = new ObjectAutoPlace();
 
     Scene myScene;
@@ -41,6 +40,13 @@ public class GraphGeneration : MonoBehaviour
     Bounds mergedBounds = new Bounds();
     private List<Vector3> BadPoint = new List<Vector3>();
 
+    public float MatchingAngle;
+    public float HMatchingRange;
+    public float VMatchingRange;
+    public string SelectedStrategy;
+    public float DecisionRange;
+    public float CoverageThreshold;
+
     private void Update()
     {
         myScene = GameObject.Find("SceneUnderstandingManager").GetComponent<SceneUnderstandingManager>().GetLatestDeserializedScene();
@@ -50,8 +56,6 @@ public class GraphGeneration : MonoBehaviour
     public void Start()
     {
         StartCoroutine(WaitForMyScene());
-        TMP = Title.GetComponent<TMP_Text>();
-        TMP.text = "Hello";
 
     }
     public IEnumerator WaitForMyScene()
@@ -95,8 +99,11 @@ public class GraphGeneration : MonoBehaviour
         }
     }
 
-    void FindSittable(SceneObject sceneObject, float x, float y, out Transform location11, out float area) //Return suitable position, could be null if nothing suitable
+    void FindSittable(SceneObject sceneObject, float x, float y, out Transform location11, out float area, out Bounds bounds) //Return suitable position, could be null if nothing suitable
     {
+        float raycastDistance = 0.5f; // 射线的长度
+        Bounds Meshbounds = new Bounds();
+        bounds = new Bounds();
         var marker = new GameObject();
         marker.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         marker.transform.SetParent(parentObject.transform);
@@ -120,7 +127,7 @@ public class GraphGeneration : MonoBehaviour
 
                 }*/
                 Hori_upward = true;
-               
+
 
 
             }
@@ -183,14 +190,35 @@ public class GraphGeneration : MonoBehaviour
                 location11 = location1.transform;
             }
 
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(new Vector3(location11.position.x, location11.position.y + 0.1f, location11.position.z), Vector3.down, raycastDistance);
+
+            float nearestDistance = float.MaxValue; // 初始化为最大浮点值
+            RaycastHit nearestHit = new RaycastHit(); // 用来存储最近的Hit
+
+            foreach (RaycastHit hit in hits)
+            {
+                if ((hit.transform.gameObject.name == "PlatformMesh" || hit.transform.gameObject.name == "BackgroundMesh" || hit.transform.gameObject.name == "WallMesh") && hit.distance < nearestDistance)
+                {
+                    nearestHit = hit;
+                    nearestDistance = hit.distance;
+                }
+            }
+
+            if (nearestHit.transform != null)
+            {
+                bounds = nearestHit.transform.gameObject.GetComponent<MeshRenderer>().bounds;
+                //DrawOnGameViewRuntime(nearestHit.transform.gameObject.GetComponent<MeshRenderer>(), Color.blue, 1f);
+            }
+
         }
-        
- 
+
+
     }
 
     private void AddSceneObjects() //Add all SceneObjects from SU scene
     {
-        
+
         SceneObject_Unity scene_object;
 
         foreach (var sceneObject in myScene.SceneObjects)
@@ -203,9 +231,9 @@ public class GraphGeneration : MonoBehaviour
 
             switch (sceneObject.Kind)
             {
-                case SceneObjectKind.Platform:                    
+                case SceneObjectKind.Platform:
                     FindCenterPlace(sceneObject, 0.1f, 0.1f, out transform, out size, out bounds);
-                    if(transform != null) 
+                    if (transform != null)
                     {
                         category = "Platform";
                         platformCount++;
@@ -236,7 +264,7 @@ public class GraphGeneration : MonoBehaviour
                     break;
 
                 case SceneObjectKind.Background:
-                    FindSittable(sceneObject, 0.1f, 0.1f, out transform, out size);// We filter vertical & big size background here
+                    FindSittable(sceneObject, 0.1f, 0.1f, out transform, out size, out bounds);// We filter vertical & big size background here
                     if (transform != null)
                     {
                         category = "Background";
@@ -274,11 +302,11 @@ public class GraphGeneration : MonoBehaviour
 
             scene_object.Bounds = bounds;
             SceneObjects.Add(scene_object);
-           
 
 
 
-            
+
+
         }
 
     }
@@ -357,7 +385,7 @@ public class GraphGeneration : MonoBehaviour
                 }
             }
 
-            if (nearestHit.transform != null) 
+            if (nearestHit.transform != null)
             {
                 bounds = nearestHit.transform.gameObject.GetComponent<MeshRenderer>().bounds;
                 //DrawOnGameViewRuntime(nearestHit.transform.gameObject.GetComponent<MeshRenderer>(), Color.blue, 1f);
@@ -473,7 +501,7 @@ public class GraphGeneration : MonoBehaviour
                         break;
                 }
 
-                
+
                 if (relation.Relationship != RelationType.None)
                 {
                     Relations.Add(relation);
@@ -526,11 +554,11 @@ public class GraphGeneration : MonoBehaviour
         if (posA.x >= boundsBMinXZ.x && posA.x <= boundsBMaxXZ.x &&
             posA.z >= boundsBMinXZ.y && posA.z <= boundsBMaxXZ.y)
         {
-            if(posA.y >= posB.y)
+            if (posA.y >= posB.y)
             {
                 return true; // 物体A在物体B的上方（忽略高度）
             }
-            
+
         }
 
         return false; // 物体A不在物体B的上方（忽略高度）
@@ -621,7 +649,7 @@ public class GraphGeneration : MonoBehaviour
     public RelationType Relationpanduan(SceneObject_Unity objectA, Vector3 objectB) ////x: right z : FORWARD 
     {
         Vector3 sizeA = objectA.Bounds.size;
-        
+
         Vector3 centerAtoB = objectB - objectA.Position.position;
 
         Vector3 longSideDirection = new Vector3();
@@ -631,7 +659,7 @@ public class GraphGeneration : MonoBehaviour
 
 
         float depth = 5.0f;
-        
+
         if (sizeA.x > sizeA.y && sizeA.x > sizeA.z)
         {
             longSideDirection = objectA.Position.right;
@@ -655,7 +683,8 @@ public class GraphGeneration : MonoBehaviour
         if (Vector3.Distance(objectA.Position.position, objectB) <= 1.0f && Mathf.Abs(centerAtoB.y) >= 0.3f)
         {
             if (centerAtoB.y < 0)
-                return RelationType.Below; else return RelationType.Above;
+                return RelationType.Below;
+            else return RelationType.Above;
         }
 
 
@@ -706,7 +735,6 @@ public class GraphGeneration : MonoBehaviour
         SceneObject_Unity objectA = relation.EndNode; //判断载体的方向
         Vector3 centerAtoB = objectB - objectA.Position.position;
 
-
         Vector3 sizeA = objectA.Bounds.size;
 
         Vector3 longSideDirection = new Vector3();
@@ -716,7 +744,8 @@ public class GraphGeneration : MonoBehaviour
 
 
         float mindepth = 1.0f; //test= 1.0
-        float maxdepth = SpecialRelations(relation);
+        float maxdepth = 3.0f;
+        maxdepth = SpecialRelations(relation);
         if (maxdepth == 2.0f)
             mindepth = 0.0f;
 
@@ -730,7 +759,7 @@ public class GraphGeneration : MonoBehaviour
             longSideDirection = objectA.Position.up;
             shortSideDirection = (sizeA.x > sizeA.z) ? objectA.Position.forward : objectA.Position.right;
 
- 
+
         }
         else
         {
@@ -749,7 +778,7 @@ public class GraphGeneration : MonoBehaviour
         }
 
 
-        
+
         if (Mathf.Abs(distanceInShortDirection) >= mindepth && Mathf.Abs(distanceInShortDirection) <= maxdepth && Mathf.Abs(distanceInLongDirection) <= sizeA.x * 0.8)
         {
             if (distanceInShortDirection > 0)
@@ -777,8 +806,8 @@ public class GraphGeneration : MonoBehaviour
         }
 
         return RelationType.None;
-        
-        
+
+
 
 
     }
@@ -786,7 +815,7 @@ public class GraphGeneration : MonoBehaviour
     public void AddGameSceneObjects()
     {
         GameSceneObjects.Clear();
-        
+
         Dictionary<string, int> categoryIDs = new Dictionary<string, int>();
 
         List<ObjectNodeData> objectNodes = null;
@@ -794,7 +823,7 @@ public class GraphGeneration : MonoBehaviour
         {
             TextAsset textAsset = Resources.Load<TextAsset>("Output1");
 
-            
+
             string fileContent = textAsset.text;
             objectNodes = LoadSceneObjectsFromFile1(fileContent);
         }
@@ -804,7 +833,7 @@ public class GraphGeneration : MonoBehaviour
         }
         //List<ObjectNodeData> objectNodes = LoadSceneObjectsFromFile("U:\\Users\\imdna\\Documents\\Output1.txt");
         //List<ObjectNodeData> objectNodes = LoadSceneObjectsFromFile("Output1.txt");
-        
+
 
         foreach (ObjectNodeData objectNode in objectNodes)
         {
@@ -828,7 +857,7 @@ public class GraphGeneration : MonoBehaviour
             sceneObject.ID = categoryIDs[objectNode.category];
             sceneObject.Height = objectNode.height;
             sceneObject.Float = objectNode.Float;
-            sceneObject.Bounds = objectNode.Prefab.GetComponent<BoxCollider>().bounds;
+            sceneObject.Bounds = objectNode.Prefab.GetComponent<BoxCollider>().bounds; //cannot get
             // Increment the ID for this category
             categoryIDs[objectNode.category]++;
             // Add to list
@@ -836,10 +865,16 @@ public class GraphGeneration : MonoBehaviour
         }
 
         TextAsset textAsset1 = Resources.Load<TextAsset>("OutputRelations");
+        TextAsset textAsset2 = Resources.Load<TextAsset>("GlobalParas");
+        //
 
-
+        //
         string fileContent1 = textAsset1.text;
+        string fileContent2 = textAsset2.text;
         GameRelations = LoadRelationsFromFile1(fileContent1);
+        LoadParametersFromFile(fileContent2);
+
+
         //GameRelations = LoadRelationsFromFile("OutputRelations.txt");
         if (GameRelations == null)
         {
@@ -852,7 +887,7 @@ public class GraphGeneration : MonoBehaviour
         {
             if (relation.Relationship != RelationType.None)
             {
-                Debug.Log( relation.StartNode.Category + " " + relation.StartNode.ID +
+                Debug.Log(relation.StartNode.Category + " " + relation.StartNode.ID +
                              " -> " + relation.EndNode.Category + " " + relation.EndNode.ID + " [label = \"" + relation.Relationship + "\"]\n");
 
             }
@@ -884,7 +919,7 @@ public class GraphGeneration : MonoBehaviour
             }
 
         }
-      
+
         /*
         Debug.Log("Relation number: " + GameRelations.Count);
 
@@ -907,7 +942,7 @@ public class GraphGeneration : MonoBehaviour
 
         foreach (RaycastHit hit in hits)
         {
-            if ((hit.transform.gameObject.name == "PlatformMesh" || hit.transform.gameObject.name == "PlatformQuad") && hit.distance < nearestDistance)
+            if ((hit.transform.gameObject.name == "PlatformMesh" || hit.transform.gameObject.name == "PlatformQuad" || hit.transform.gameObject.name == "BackgroundMesh") && hit.distance < nearestDistance)
             {
                 nearestHit = hit;
                 nearestDistance = hit.distance;
@@ -923,9 +958,9 @@ public class GraphGeneration : MonoBehaviour
         //常见的大物体： 桌子，椅子，电视，沙发，书架，柜子 逻辑：椅子最好挨着桌子，电视可以远一些。。。
         //小东西： 桌上的/沙发上的小东西 逻辑：Above，紧贴着附属物体
         float depth = 2.0f;
-        if(relation.StartNode.Category == "Chair")
+        if (relation.StartNode.Category == "Chair")
         {
-            switch(relation.EndNode.Category)
+            switch (relation.EndNode.Category)
             {
                 case "Table":
                 case "Platform":
@@ -935,7 +970,7 @@ public class GraphGeneration : MonoBehaviour
                 case "Bed":
                 case "Wall":
                     depth = 2.0f; break;
-            
+
                 case "TV":
                     depth = 8.0f; break;
 
@@ -1154,7 +1189,7 @@ public class GraphGeneration : MonoBehaviour
 
         while (set.Count != ARSceneObjects.Count) //TODO: Check to ensure the graph is a connetced graph
         {
-            if(virtualNum == GameSceneObjects.Count)
+            if (virtualNum == GameSceneObjects.Count)
             {
                 Debug.Log("ALL not match!");
                 break;
@@ -1202,7 +1237,8 @@ public class GraphGeneration : MonoBehaviour
                         {
                             Vector3 targetPostition = new Vector3(otherNode.Position.position.x, myObject.transform.position.y, otherNode.Position.position.z);
                             myObject.transform.LookAt(targetPostition);
-                        }else
+                        }
+                        else
                         {
                             Vector3 eulerRot = otherNode.Position.rotation.eulerAngles;
 
@@ -1212,7 +1248,7 @@ public class GraphGeneration : MonoBehaviour
                             // 应用新的旋转
                             myObject.transform.rotation = Quaternion.Euler(eulerRot);
                         }
-                        
+
                         currentNode.Position.position = new Vector3(myPosition.Value.x, myPosition.Value.y + myObject.GetComponent<BoxCollider>().bounds.size.y, myPosition.Value.z);
                         currentNode.Position.rotation = myObject.transform.rotation;
 
@@ -1224,7 +1260,7 @@ public class GraphGeneration : MonoBehaviour
 
             }
         }
-     
+
 
     }
 
@@ -1248,9 +1284,9 @@ public class GraphGeneration : MonoBehaviour
 
                 if (relation1.Relationship == RelationType.Above)
                 {
-                    if(!relation1.EndNode.Real)
+                    if (!relation1.EndNode.Real)
                     {
-                        if(relation1.StartNode.Float)
+                        if (relation1.StartNode.Float)
                         {
                             return relation1.EndNode.Position.position + new Vector3(0, 0.6f, 0);
                         }
@@ -1277,10 +1313,10 @@ public class GraphGeneration : MonoBehaviour
 
                         if (relation1.StartNode.Float)
                         {
-                            return PlatformPosition(Prefab, platformposition, platformBounds) + new Vector3(0, 0.6f, 0);
+                            return PlatformPosition(Prefab, platformposition, platformBounds, nearestHit.transform.gameObject.name) + new Vector3(0, 0.6f, 0);
                         }
 
-                        return PlatformPosition(Prefab, platformposition, platformBounds);
+                        return PlatformPosition(Prefab, platformposition, platformBounds, nearestHit.transform.gameObject.name);
 
                     }
 
@@ -1290,11 +1326,43 @@ public class GraphGeneration : MonoBehaviour
                 {
                     return new Vector3(relation1.EndNode.Position.position.x, relation1.EndNode.Position.position.y - 0.5f, relation1.EndNode.Position.position.z);
                 }
-                
+
             }
             else
             {
-                if(!relation1.StartNode.Float) //放在地板上
+                if (relation1.EndNode.Category == "Wall")
+                {
+                    Vector3 center = relation1.EndNode.Position.position;
+                    if (relation1.Relationship != RelationType.InFrontOf)
+                    {
+                        Debug.Log("Invalid relationship for a wall. The object can only be in front of the wall.");
+                        return null; // 结束函数，因为我们不处理墙的其他关系类型
+                    }
+
+                    float step = 0.4f;
+                    List<Vector3> searchDirections = new List<Vector3> { Vector3.forward }; // 墙只考虑前方
+
+                    for (float distance = step; distance <= 2; distance += step)
+                    {
+                        foreach (var direction in searchDirections)
+                        {
+                            Vector3 potentialPosition = center + direction * distance;
+
+                            // 由于物体只能在墙的前面，我们不需要调整 y 值
+                            potentialPosition.y = center.y;
+
+                            if (IsRelationMatched(relation1.Relationship, RelationJudgeForFloat(relation1, potentialPosition)))
+                            {
+                                return potentialPosition;
+                            }
+                        }
+                    }
+
+                    Debug.Log("No valid position found in front of the wall.");
+                    return null;
+                }
+
+                if (!relation1.StartNode.Float) //放在地板上
                 {
                     List<Vector3> Positions = new List<Vector3>();
                     Floors = FloorSearch(Floors);
@@ -1307,7 +1375,6 @@ public class GraphGeneration : MonoBehaviour
 
                         Positions.AddRange(positions);
                     }
-                    Debug.Log("Positions count: " + Positions.Count);
 
                     float closestDistance = float.MaxValue;
                     Vector3 closestPosition = Vector3.zero;
@@ -1318,13 +1385,10 @@ public class GraphGeneration : MonoBehaviour
                     {
                         Vector3 targetPosition = new Vector3(position.x, 0, position.z);
                         RelationType currentRelation = RelationJudge(relation1, position);
-                        if(relation1.StartNode.Category == "Character")
-                        {
-                            //Debug.Log(relation1.EndNode.Category + " " + relation1.EndNode.Bounds.size);
 
-                        }
                         if (IsRelationMatched(relation1.Relationship, currentRelation))
                         {
+
                             float distance = Vector3.Distance(endNodePosition, targetPosition);
                             if (distance < closestDistance)
                             {
@@ -1340,7 +1404,7 @@ public class GraphGeneration : MonoBehaviour
                         Debug.Log(putPosition);
                         return putPosition;
                     }
-                
+
                     Debug.LogError("ERROR! Due to phsical space, no suitable place to put " + Prefab.name);
                     return null;
 
@@ -1407,7 +1471,7 @@ public class GraphGeneration : MonoBehaviour
                     return null;
                 }
 
-                
+
 
             }
         }
@@ -1501,12 +1565,11 @@ public class GraphGeneration : MonoBehaviour
 
         return new Relation(newStartNode, newEndNode, newRelationship);
     }
-    public Vector3 PlatformPosition(GameObject Object, Vector3 Position, Bounds bound)
+    public Vector3 PlatformPosition(GameObject Object, Vector3 Position, Bounds bound, string colliderObject)
     {
-        TMP.text += Object.name;
+        //TMP.text += Object.name;
         BoxCollider Collider = Object.GetComponent<BoxCollider>();
         Vector3 colliderSize = Collider.bounds.size;
-
         // 检测是否与其他物体发生重叠
 
         float gridSize = 0.2f; // 网格单元的大小
@@ -1536,15 +1599,17 @@ public class GraphGeneration : MonoBehaviour
                         continue;
                     }
 
+
                     if (colliders.Length > 0)
                     {
                         int ignoredCollidersCount = 0;
                         foreach (Collider collider in colliders)
                         {
-                            if (collider.gameObject.name == "PlatformMesh" || collider.gameObject.name.StartsWith("SpatialMesh"))
+                            if (collider.gameObject.name == colliderObject || collider.gameObject.name.StartsWith("SpatialMesh"))
                             {
                                 ignoredCollidersCount++;
                             }
+
                         }
 
                         // 如果存在任何一个collider不是被忽略的，则跳过此次循环
@@ -1552,31 +1617,21 @@ public class GraphGeneration : MonoBehaviour
                         {
                             continue;
                         }
+
                     }
 
                     //是否在不规则形状上面
                     GameObject UnderObject = objectAutoPlace.GetObjectBelow(representativePoint + new Vector3(0.0f, 0.1f, 0.0f));
-                    if (UnderObject == null || (UnderObject.name != "PlatformMesh" && !UnderObject.name.StartsWith("SpatialMesh")))
+                    if (UnderObject == null || (UnderObject.name != colliderObject && !UnderObject.name.StartsWith("SpatialMesh")))
                     {
                         continue;
                     }
 
 
-                    //是否已经出现过
-                    if (BadPoint.Contains(representativePoint))
-                    {
-                        continue;
-                    }
-
-                    BadPoint.Add(representativePoint);
-
-               
                     return representativePoint;
                 }
             }
         }
-
-        BadPoint.Add(Position);
 
         return Position;
 
@@ -1612,7 +1667,7 @@ public class GraphGeneration : MonoBehaviour
         }
 
         List<GameObject> Floors1 = new List<GameObject>();
-        Floors1 =  Floors.OrderBy(p => Vector3.Distance(Vector3.zero, p.transform.position)).ToList();
+        Floors1 = Floors.OrderBy(p => Vector3.Distance(Vector3.zero, p.transform.position)).ToList();
 
         return Floors1;
     }
@@ -1822,6 +1877,52 @@ public class GraphGeneration : MonoBehaviour
         return relations;
     }
 
+    public void LoadParametersFromFile(string fileContent)
+    {
+        using (StringReader reader = new StringReader(fileContent))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+
+                string[] parts = line.Split(':');
+                if (parts.Length == 2)
+                {
+                    string key = parts[0].Trim();
+                    string value = parts[1].Trim();
+                    switch (key)
+                    {
+                        case "MachingAngle":
+                            MatchingAngle = float.Parse(value);
+                            break;
+                        case "HorizontalMatchingRange":
+                            HMatchingRange = float.Parse(value);
+                            break;
+                        case "VerticalMatchingRange":
+                            VMatchingRange = float.Parse(value);
+                            break;
+                        case "SelectedStrategy":
+                            SelectedStrategy = value;
+                            break;
+                        case "DecisionRange":
+                            DecisionRange = float.Parse(value);
+                            break;
+                        case "CoverageThreshold":
+                            CoverageThreshold = float.Parse(value);
+                            break;
+                    }
+                }
+            }
+        }
+
+        Debug.Log("Matching Angle: " + MatchingAngle);
+        Debug.Log("Horizontal Matching Range: " + HMatchingRange);
+        Debug.Log("Vertical Matching Range: " + VMatchingRange);
+        Debug.Log("Selected Strategy: " + SelectedStrategy); // 显示选中的策略名称
+        Debug.Log("Decision Range: " + DecisionRange);
+        Debug.Log("Coverage Threshold: " + CoverageThreshold);
+    }
+
     public List<Relation> LoadRelationsFromFile1(string file)
     {
         List<Relation> relations = new List<Relation>();
@@ -1881,8 +1982,8 @@ public class GraphGeneration : MonoBehaviour
         GameObjectCreate(ARRelations, ARSceneObjects);
 
         Debug.Log("Real relations number: " + Relations.Count + " Game relations number: " + GameRelations.Count + " AR relations number: " + ARRelations.Count);
-    
-            using (StreamWriter writer = new StreamWriter("D://RealSceneGraph_RPG1.txt"))
+
+        using (StreamWriter writer = new StreamWriter("D://RealSceneGraph_Puzzle.txt"))
         {
             foreach (Relation relation in Relations)
             {
@@ -1896,7 +1997,7 @@ public class GraphGeneration : MonoBehaviour
             }
         }
 
-        using (StreamWriter writer = new StreamWriter("D://GameSceneGraph_RPG1.txt"))
+        using (StreamWriter writer = new StreamWriter("D://GameSceneGraph_Puzzle.txt"))
         {
             foreach (Relation relation in GameRelations)
             {
@@ -1910,7 +2011,7 @@ public class GraphGeneration : MonoBehaviour
             }
         }
 
-        using (StreamWriter writer = new StreamWriter("D://ARSceneGraph_RPG1.txt"))
+        using (StreamWriter writer = new StreamWriter("D://ARSceneGraph_Puzzle.txt"))
         {
             foreach (Relation relation in ARRelations)
             {
@@ -1924,7 +2025,7 @@ public class GraphGeneration : MonoBehaviour
             }
         }
 
-        
+
 
     }
 
