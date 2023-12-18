@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2abd7dd92564943a6a3a6632fe25a0, type: 3}
+  m_Name: GameSceneData
+  m_EditorClassIdentifier: 
+  Name: 
+  Horizontal: 0
+  Category: 
+  Size: 0
+  Height: 0
+  Prefab: {fileID: 0}

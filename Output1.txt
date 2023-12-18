@@ -1,0 +1,99 @@
+Data
+ID = 0
+GID = e0a265d4-a841-41ea-b00b-923ae4997caf
+Name = Lamp
+Category = Unknown
+Size = 0
+Height = 0
+Horizontal = False
+Prefab = Lamp
+Data
+ID = 0
+GID = 353c1459-67ae-45f0-816e-0011bc1de9db
+Name = Table2
+Category = Table
+Size = 1
+Height = 60
+Horizontal = True
+Prefab = table
+Data
+ID = 0
+GID = b0a9e7f2-643e-4b9a-8585-1d6773464f6c
+Name = Table1
+Category = Table
+Size = 1
+Height = 60
+Horizontal = True
+Prefab = table
+Data
+ID = 0
+GID = c5a33f95-22ba-44a6-b5dd-60cce5347e84
+Name = Wall1
+Category = Wall
+Size = 0.5
+Height = 0
+Horizontal = False
+Prefab = N/A
+Data
+ID = 0
+GID = a3bf23c0-bd84-45be-bc65-6a302d25afc2
+Name = Joe
+Category = Character
+Size = 0
+Height = 0
+Horizontal = True
+Prefab = NewMan
+Data
+ID = 0
+GID = 9e53daf1-e776-4c2e-a9bc-aba9164e19ad
+Name = Sofa
+Category = Sofa
+Size = 2
+Height = 40
+Horizontal = True
+Prefab = N/A
+Data
+ID = 0
+GID = a9dba6ef-0eba-429b-b3bd-b13bd8152276
+Name = Photo
+Category = Unknown
+Size = 0
+Height = 0
+Horizontal = False
+Prefab = PosterFrame
+Data
+ID = 0
+GID = 333c9018-27e6-42dc-bedf-fec13d5841e4
+Name = Dice
+Category = Unknown
+Size = 0
+Height = 0
+Horizontal = True
+Prefab = Dice
+Data
+ID = 0
+GID = 87dac7ff-1fcc-4a22-a1b3-96515252c9fa
+Name = Office Chair
+Category = Chair
+Size = 0.15
+Height = -1
+Horizontal = True
+Prefab = NewChair
+Data
+ID = 0
+GID = 38c9fdfd-ab96-43ec-9290-871ab1019e36
+Name = Cup1
+Category = Unknown
+Size = 0
+Height = 0
+Horizontal = False
+Prefab = Cup
+Data
+ID = 0
+GID = 80d40bfa-84da-47f4-b055-7a6544a44cfe
+Name = Cup2
+Category = Unknown
+Size = 0
+Height = 0
+Horizontal = True
+Prefab = Cup

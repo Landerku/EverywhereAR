@@ -1,0 +1,42 @@
+Wall1 -> Wall3 [label = "Below"]
+
+Wall1 -> Wall4 [label = "NextTo"]
+
+Wall1 -> Floor1 [label = "Above"]
+
+Wall2 -> Wall5 [label = "NextTo"]
+
+Wall2 -> Floor1 [label = "Above"]
+
+Wall2 -> Wall11 [label = "NextTo"]
+
+Wall2 -> Wall15 [label = "NextTo"]
+
+Wall3 -> Floor1 [label = "Above"]
+
+Wall3 -> Wall9 [label = "Above"]
+
+Wall4 -> Floor1 [label = "Above"]
+
+Wall4 -> Wall14 [label = "NextTo"]
+
+Wall5 -> Floor1 [label = "Above"]
+
+Platform1 -> Floor1 [label = "Above"]
+
+Platform1 -> Background1 [label = "NextTo"]
+
+Wall6 -> Floor1 [label = "Above"]
+
+Platform2 -> Floor1 [label = "Above"]
+
+Wall7 -> Floor1 [label = "Above"]
+
+Wall8 -> Floor1 [label = "Above"]
+
+Platform3 -> Background1 [label = "NextTo"]
+
+Wall11 -> Wall15 [label = "NextTo"]
+
+Wall12 -> Wall17 [label = "NextTo"]
+

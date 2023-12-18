@@ -1,0 +1,40 @@
+Data
+ID = 0
+GID = 2e8834aa-8546-471f-ab77-f1bc440b0b21
+Name = table
+Category = Table
+Size = 0
+Height = 0
+Horizontal = True
+Float = False
+Prefab = Table
+Data
+ID = 0
+GID = d5d493f5-c8b4-4f2a-bae9-49c3b7175f26
+Name = 
+Category = Unknown
+Size = 0
+Height = 0
+Horizontal = True
+Float = False
+Prefab = Pumpkins
+Data
+ID = 0
+GID = 622ff5c7-95dc-493b-a29f-9f94c6221290
+Name = 
+Category = Chair
+Size = 0
+Height = 0
+Horizontal = True
+Float = False
+Prefab = Chair 1
+Data
+ID = 0
+GID = 42549be5-bf6f-492d-961b-1059a945c449
+Name = Elf
+Category = Character
+Size = 0
+Height = 0
+Horizontal = True
+Float = False
+Prefab = Elf
