@@ -20,6 +20,26 @@ Float = False
 Prefab = Pumpkins
 Data
 ID = 0
+GID = dd59658e-0657-4d34-a68d-979919186c65
+Name = 
+Category = Character
+Size = 0
+Height = 0
+Horizontal = True
+Float = False
+Prefab = Deer
+Data
+ID = 0
+GID = ccd1b2a8-2dfd-49ba-ba55-ab561213f7bd
+Name = 
+Category = Unknown
+Size = 0
+Height = 0
+Horizontal = True
+Float = False
+Prefab = Tree1
+Data
+ID = 0
 GID = 622ff5c7-95dc-493b-a29f-9f94c6221290
 Name = 
 Category = Chair
@@ -30,11 +50,11 @@ Float = False
 Prefab = Chair 1
 Data
 ID = 0
-GID = 42549be5-bf6f-492d-961b-1059a945c449
-Name = Elf
+GID = ff65ddfd-355f-45b1-b495-ea947c491e93
+Name = 
 Category = Character
 Size = 0
 Height = 0
 Horizontal = True
 Float = False
-Prefab = Elf
+Prefab = Bear

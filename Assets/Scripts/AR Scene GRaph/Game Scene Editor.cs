@@ -19,9 +19,26 @@ public class GameSceneEditor : Editor
     public Dictionary<ObjectNode, SceneObject_Unity> object_unity_Dict = new Dictionary<ObjectNode, SceneObject_Unity>();
     public Dictionary<SceneObject_Unity, ObjectNode> unity_object_Dict = new Dictionary<SceneObject_Unity, ObjectNode>();
     public Dictionary<string, SceneObject_Unity> Node_Dict = new Dictionary<string, SceneObject_Unity>();
+
+    public float MatchingAngle = 0f;
+    public float HMatchingRange = 0f;
+    public float VMatchingRange = 0f;
+    public int SelectedStrategy = 0;
+    public float DecisionRange = 0f;
+    public float CoverageThreshold  = 0f;
+    private string[] arrangementStrategies = new string[] { "Default", "Do not place", "Choose similar place" };
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
+        MatchingAngle = EditorGUILayout.Slider("Matching Angle", MatchingAngle, 45, 135);  // 参数分别为标签、当前值、最小值和最大值
+        HMatchingRange = EditorGUILayout.Slider("Horizontal Matching Range", HMatchingRange, 0, 5);
+        VMatchingRange = EditorGUILayout.Slider("Vertical Matching Range", VMatchingRange, 0, 5);
+
+        SelectedStrategy = EditorGUILayout.Popup("Arrangement Strategy", SelectedStrategy, arrangementStrategies);
+
+        DecisionRange = EditorGUILayout.Slider("Decision Range", DecisionRange, 0, 0.5f);
+        CoverageThreshold = EditorGUILayout.Slider("Coverage Threshold", CoverageThreshold, 0, 1);
+
         graph = target as GameSceneGraph;
         if(GUILayout.Button("Output"))
         {
@@ -203,8 +220,23 @@ public class GameSceneEditor : Editor
             SaveSceneObjectsToFile(path, objectNodes);
             path = System.IO.Path.Combine(Application.dataPath, "Resources/OutputRelations.txt");
             SaveRelationsToFile(path, GameRelations);
-            
+            string ParaPath = System.IO.Path.Combine(Application.dataPath, "Resources/GlobalParas.txt");
+            SaveParaToFile(ParaPath);
         }
+    }
+
+    public void  SaveParaToFile(string filePath)
+    {
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            writer.WriteLine("Matching Angle: " + MatchingAngle);
+            writer.WriteLine("Horizontal Matching Range: " + HMatchingRange);
+            writer.WriteLine("Vertical Matching Range: " + VMatchingRange);
+            writer.WriteLine("Selected Strategy: " + arrangementStrategies[SelectedStrategy]); // 显示选中的策略名称
+            writer.WriteLine("Decision Range: " + DecisionRange);
+            writer.WriteLine("Coverage Threshold: " + CoverageThreshold);
+        }
+
     }
 
     public void SaveSceneObjectsToFile(string filePath, List<ObjectNode> objects)

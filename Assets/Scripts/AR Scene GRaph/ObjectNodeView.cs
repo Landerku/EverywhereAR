@@ -1,5 +1,4 @@
-﻿
-#if (UNITY_EDITOR) 
+﻿#if (UNITY_EDITOR) 
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using GraphProcessor;
