@@ -229,12 +229,12 @@ public class GameSceneEditor : Editor
     {
         using (StreamWriter writer = new StreamWriter(filePath))
         {
-            writer.WriteLine("Matching Angle: " + MatchingAngle);
-            writer.WriteLine("Horizontal Matching Range: " + HMatchingRange);
-            writer.WriteLine("Vertical Matching Range: " + VMatchingRange);
-            writer.WriteLine("Selected Strategy: " + arrangementStrategies[SelectedStrategy]); // 显示选中的策略名称
-            writer.WriteLine("Decision Range: " + DecisionRange);
-            writer.WriteLine("Coverage Threshold: " + CoverageThreshold);
+            writer.WriteLine("MachingAngle: " + MatchingAngle);
+            writer.WriteLine("HorizontalMatchingRange: " + HMatchingRange);
+            writer.WriteLine("VerticalMatchingRange: " + VMatchingRange);
+            writer.WriteLine("SelectedStrategy: " + arrangementStrategies[SelectedStrategy]); // 显示选中的策略名称
+            writer.WriteLine("DecisionRange: " + DecisionRange);
+            writer.WriteLine("CoverageThreshold: " + CoverageThreshold);
         }
 
     }
