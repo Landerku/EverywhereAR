@@ -9,6 +9,7 @@ Solution/
 App/
 Apps/
 
+Assets/Resources
 Assets/AssetStoreTools*
 # Ignore NuGet packages
 Assets/Packages
