@@ -15,6 +15,7 @@ using static UnityEngine.GraphicsBuffer;
 using UnityEngine.UIElements;
 using Microsoft.MixedReality.Toolkit;
 using System.Security.Cryptography;
+using System.Security.Claims;
 
 public class GraphGeneration : MonoBehaviour
 {
@@ -1246,7 +1247,12 @@ public class GraphGeneration : MonoBehaviour
                             eulerRot.z = 0;
 
                             // 应用新的旋转
-                            myObject.transform.rotation = Quaternion.Euler(eulerRot);
+                            if (currentNode.Category == "Character")
+                            {
+                                myObject.transform.rotation = SitOppositeBackOfChair(myObject.transform.position, 15.0f, Quaternion.Euler(eulerRot));
+                            }
+
+                            else { myObject.transform.rotation = Quaternion.Euler(eulerRot); }
                         }
 
                         currentNode.Position.position = new Vector3(myPosition.Value.x, myPosition.Value.y + myObject.GetComponent<BoxCollider>().bounds.size.y, myPosition.Value.z);
@@ -1483,6 +1489,43 @@ public class GraphGeneration : MonoBehaviour
         }
     }
 
+    public Quaternion SitOppositeBackOfChair(Vector3 position, float tolerance, Quaternion ori)
+    {
+        Quaternion orientation = ori;
+
+        // 在座位位置周围创建一个球形碰撞检测区域
+        Collider[] hitColliders = Physics.OverlapSphere(position, 0.3f);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            Debug.Log("How many hits" + hitCollider.name + Mathf.Abs(Vector3.Angle(hitCollider.gameObject.transform.up, Vector3.up)));
+            if (hitCollider.gameObject.name == "BackgroundMesh" && Mathf.Abs(Vector3.Angle(hitCollider.gameObject .transform.up, Vector3.up)) < tolerance)
+            {
+                Vector3 toBack = ((hitCollider.gameObject.transform.position - position).normalized);
+
+                // Step 2: 获取椅背的法线
+                Vector3 backNormal = (hitCollider.gameObject.transform.forward);
+                Debug.DrawRay(hitCollider.gameObject.transform.position, hitCollider.gameObject.transform.forward, Color.red, 50.0f);
+                Debug.DrawRay(hitCollider.gameObject.transform.position, toBack, Color.blue, 50.0f);
+
+
+                // Step 3: 判断法线的朝向是否与座位相对
+                // Step 4: 确定正确的朝向
+                if (Vector3.Dot(toBack, backNormal) > 0)
+                {
+                    // 如果法线朝向座位，表示椅背的正面朝向座位，人物应该面向椅背的背面（即法线的反方向）
+                    orientation = Quaternion.LookRotation(-backNormal);
+                }
+                else
+                {
+                    // 如果法线朝向座位的反方向，表示椅背的背面朝向座位，人物应该面向椅背的正面（即法线的方向）
+                    orientation = Quaternion.LookRotation(backNormal);
+                }
+            }
+        }
+
+        return orientation;
+    }
     private RelationType RelationJudgeForFloat(Relation relation, Vector3 objectB)
     {
         SceneObject_Unity objectA = relation.EndNode;
