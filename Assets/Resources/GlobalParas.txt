@@ -1,6 +1,6 @@
-Matching Angle: 80.5
-Horizontal Matching Range: 0.86
-Vertical Matching Range: 1.23
-Selected Strategy: Default
-Decision Range: 0.256
-Coverage Threshold: 0.299
+MachingAngle: 45
+HorizontalMatchingRange: 0
+VerticalMatchingRange: 0
+SelectedStrategy: Default
+DecisionRange: 0
+CoverageThreshold: 0

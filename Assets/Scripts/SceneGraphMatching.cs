@@ -16,7 +16,7 @@ public class SceneGraphMatching: MonoBehaviour
 
         if (n.Category == "Wall" && targetNode.Category == "Wall" && targetNode.Size >= n.Size)
             return true;
-        if ((n.Category == "Chair" && targetNode.Category == "Background") && (n.Horizontal == targetNode.Horizontal))
+        if ((n.Category == "Chair" && targetNode.Category == "Background") && (n.Horizontal == targetNode.Horizontal) && Math.Abs(targetNode.Size - n.Size) <= 0.1)
             return true;
         if (n.Category == "Table" && targetNode.Category == "Platform")//***For TEST***
             return true;
