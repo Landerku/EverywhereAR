@@ -1,6 +1,6 @@
-MachingAngle: 45
-HorizontalMatchingRange: 0
-VerticalMatchingRange: 0
+MachingAngle: 40
+HorizontalMatchingRange: 1.5
+VerticalMatchingRange: 0.3
 SelectedStrategy: Default
 DecisionRange: 0
 CoverageThreshold: 0

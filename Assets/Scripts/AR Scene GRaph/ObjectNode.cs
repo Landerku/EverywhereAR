@@ -27,7 +27,7 @@ public class ObjectNode : BaseNode
     [Output(name = "OutputRelationship", allowMultiple = true)]
     public int output;
 
-    [Output(name = "In front of", allowMultiple = true)]
+    /*[Output(name = "In front of", allowMultiple = true)]
     public int InFrontOf;
 
     [Output(name = "Behind", allowMultiple = true)]
@@ -36,7 +36,7 @@ public class ObjectNode : BaseNode
     [Output(name = "Right", allowMultiple = true)]
     public int Right;
 
-    [Output(name = "Left", allowMultiple = true)]
+    [Output(name = "Left", allowMultiple = true)]*/
     public int Left;
 
     [Output(name = "Below", allowMultiple = true)]

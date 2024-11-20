@@ -28,7 +28,7 @@ public class ObjectNodeView : BaseNodeView
 
         List<string> options = new List<string>() { "Horizontal", "Vertical"};
         List<string> options1 = new List<string>() { "Yes", "No" };
-        List<string> categories = new List<string>() { "Unknown", "Chair", "Table", "Sofa", "Wall", "Floor", "Character", "TV", "Shelf", "Bed" };
+        List<string> categories = new List<string>() { "Unknown", "Chair", "Table", "Sofa", "Wall", "Floor", "Character", "TV", "Shelf", "Bed" , "Terrain" };
         //GameObject model = new GameObject();
 
 

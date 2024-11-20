@@ -16,6 +16,11 @@ using UnityEngine.UIElements;
 using Microsoft.MixedReality.Toolkit;
 using System.Security.Cryptography;
 using System.Security.Claims;
+using UnityEditor;
+using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
+using Microsoft.MixedReality.WorldLocking.Core;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 public class GraphGeneration : MonoBehaviour
 {
@@ -27,6 +32,7 @@ public class GraphGeneration : MonoBehaviour
     public Dictionary<SceneObject_Unity, ObjectNodeData> unity_object_Dict = new Dictionary<SceneObject_Unity, ObjectNodeData>();
     public Dictionary<string, SceneObject_Unity> Node_Dict = new Dictionary<string, SceneObject_Unity>();
     ObjectAutoPlace objectAutoPlace = new ObjectAutoPlace();
+    bool isFirstCall = true;
 
     Scene myScene;
 
@@ -47,6 +53,15 @@ public class GraphGeneration : MonoBehaviour
     public string SelectedStrategy;
     public float DecisionRange;
     public float CoverageThreshold;
+    public TMP_Text titleText;
+    public Material newMaterial;
+    public Material FloorMaterial;
+    public Material PlaneMaterial;
+
+    Vector3 LabelPosition = new Vector3(-99, -99, -99);
+    Vector3 LabelPosition1 = new Vector3(-99, -99, -99);
+    Vector3 LabelPosition2 = new Vector3(-99, -99, -99);
+
 
     private void Update()
     {
@@ -57,6 +72,10 @@ public class GraphGeneration : MonoBehaviour
     public void Start()
     {
         StartCoroutine(WaitForMyScene());
+
+        //test
+        //GameObject slateBlank = GameObject.Find("SlateBlank");
+        //titleText = slateBlank.transform.Find("TitleBar/Title").GetComponent<TMP_Text>();
 
     }
     public IEnumerator WaitForMyScene()
@@ -79,26 +98,137 @@ public class GraphGeneration : MonoBehaviour
             if (obj.name == "FloorMesh" || obj.name == "FloorQuad")
             {
                 FloorObjects.Add(obj);
+
             }
+
+            /*if(obj.name == "PlatformMesh")
+            {
+                GameObject clonedObj = GameObject.Instantiate(obj);
+                clonedObj.transform.position = obj.transform.position;
+                clonedObj.transform.rotation = obj.transform.rotation;
+                clonedObj.transform.localScale = obj.transform.localScale;
+                MeshRenderer renderer = clonedObj.GetComponent<MeshRenderer>();
+                renderer.material = new Material(renderer.material);
+
+                if (renderer != null)
+                {
+
+                    renderer.material = PlaneMaterial;
+                    renderer.material.shader = Shader.Find("Custom/PlaneTextureShader");
+
+                    Vector3 currentPosition = clonedObj.transform.position;
+
+                    // 微调位置向上移动(避免被spatial mesh遮挡)
+                    clonedObj.transform.position = new Vector3(currentPosition.x, currentPosition.y + 0.01f, currentPosition.z);
+                }
+
+            }*/
+
+           if (obj.name == "BackgroundMesh") //添加材质
+            {
+                Vector3 Faxian = obj.transform.forward;
+                float dotProductWithUp = Vector3.Dot(Faxian, Vector3.up);
+                Debug.DrawRay(new Vector3(obj.transform.position.x, obj.transform.position.y + 0.1f, obj.transform.position.z), obj.transform.forward, Color.yellow, 500.0f);
+
+
+                // 判断该值是否接近1或-1，这里允许一定误差范围，例如0.01
+                /*if (Mathf.Abs(dotProductWithUp) >= 0.8)
+                {
+                    GameObject clonedObj = GameObject.Instantiate(obj);
+                    clonedObj.transform.position = obj.transform.position;
+                    clonedObj.transform.rotation = obj.transform.rotation;
+                    clonedObj.transform.localScale = obj.transform.localScale;
+                    MeshRenderer renderer = clonedObj.GetComponent<MeshRenderer>();
+                    renderer.material = new Material(renderer.material);
+
+                    if (renderer != null)
+                    {
+
+                        renderer.material = PlaneMaterial;
+                        renderer.material.shader = Shader.Find("Custom/PlaneTextureShader");
+
+                        Vector3 currentPosition = clonedObj.transform.position;
+
+                        // 微调位置向上移动(避免被spatial mesh遮挡)
+                        clonedObj.transform.position = new Vector3(currentPosition.x, currentPosition.y + 0.01f, currentPosition.z);
+                    }
+                }*/
+                /*else
+                {
+                    GameObject clonedObj = GameObject.Instantiate(obj);
+                    clonedObj.transform.position = obj.transform.position;
+                    clonedObj.transform.rotation = obj.transform.rotation;
+                    clonedObj.transform.localScale = obj.transform.localScale;
+
+                    //float dotProductWithUp = Vector3.Dot(Faxian, Vector3.up);
+                    //Debug.DrawRay(new Vector3(obj.transform.position.x, obj.transform.position.y, obj.transform.position.z), obj.transform.forward, Color.yellow, 500.0f);
+                    Material newMaterial = Resources.Load<Material>("Leaves");
+                    MeshRenderer renderer = clonedObj.GetComponent<MeshRenderer>();
+                    renderer.material = new Material(newMaterial);
+
+                    renderer.material.shader = Shader.Find("Custom/VerticalPlaneTextureShader");
+
+                    // 微调位置向上移动(避免被spatial mesh遮挡)
+                    clonedObj.transform.position += -clonedObj.transform.forward * 0.01f;
+                }*/
+               
+            }
+
+            /*if(obj.name == "WallMesh")
+            {
+                GameObject clonedObj = GameObject.Instantiate(obj);
+                clonedObj.transform.position = obj.transform.position;
+                clonedObj.transform.rotation = obj.transform.rotation;
+                clonedObj.transform.localScale = obj.transform.localScale;
+                //float dotProductWithUp = Vector3.Dot(Faxian, Vector3.up);
+                //Debug.DrawRay(new Vector3(obj.transform.position.x, obj.transform.position.y, obj.transform.position.z), obj.transform.forward, Color.yellow, 500.0f);
+                Material newMaterial = Resources.Load<Material>("Leaves");
+                MeshRenderer renderer = clonedObj.GetComponent<MeshRenderer>();
+                renderer.material = new Material(newMaterial);
+
+                renderer.material.shader = Shader.Find("Custom/VerticalPlaneTextureShader");
+
+                // 微调位置向上移动(避免被spatial mesh遮挡)
+                clonedObj.transform.position += -clonedObj.transform.forward * 0.01f ;
+            }*/
         }
 
         Debug.Log("地板的物体数量为：" + FloorObjects.Count);
 
         mergedBounds = FloorObjects[0].GetComponent<MeshRenderer>().bounds;//初始化避免包括原点
 
-        foreach (GameObject obj in FloorObjects)
+        /*foreach (GameObject obj in FloorObjects)
         {
             // 获取物体的边界信息
             MeshRenderer renderer = obj.GetComponent<MeshRenderer>();
             Bounds bounds = renderer.bounds;
             Debug.Log("范围大小:" + bounds.max + bounds.min);
 
+            
+            if (renderer != null)
+            {
+                GameObject clonedObj = GameObject.Instantiate(obj);
+                clonedObj.transform.position = obj.transform.position;
+                clonedObj.transform.rotation = obj.transform.rotation;
+                clonedObj.transform.localScale = obj.transform.localScale;
+                renderer = clonedObj.GetComponent<MeshRenderer>();
+                renderer.material = FloorMaterial;
+                renderer.material.shader = Shader.Find("Custom/PlaneTextureShader");
+                Vector3 currentPosition = clonedObj.transform.position;
+
+                // 微调位置向上移动(避免被spatial mesh遮挡)
+                clonedObj.transform.position = new Vector3(currentPosition.x, currentPosition.y + 0.01f, currentPosition.z);
+            }
+         
+
 
             mergedBounds.Encapsulate(bounds);
 
 
-        }
+        }*/
     }
+
+    
 
     void FindSittable(SceneObject sceneObject, float x, float y, out Transform location11, out float area, out Bounds bounds) //Return suitable position, could be null if nothing suitable
     {
@@ -209,7 +339,7 @@ public class GraphGeneration : MonoBehaviour
             if (nearestHit.transform != null)
             {
                 bounds = nearestHit.transform.gameObject.GetComponent<MeshRenderer>().bounds;
-                //DrawOnGameViewRuntime(nearestHit.transform.gameObject.GetComponent<MeshRenderer>(), Color.blue, 1f);
+                DrawOnGameViewRuntime(nearestHit.transform.gameObject.GetComponent<MeshRenderer>(), Color.blue, 1f);
             }
 
         }
@@ -240,6 +370,7 @@ public class GraphGeneration : MonoBehaviour
                         platformCount++;
                         horizontal = true;
                         scene_object = new SceneObject_Unity(platformCount, category, size, transform, horizontal, true);
+                        Debug.Log("IIIIIIMMMMMMMMMMDDDDDDDDD");
                     }
                     else
                     {
@@ -271,6 +402,7 @@ public class GraphGeneration : MonoBehaviour
                         category = "Background";
                         backgroundCount++;
                         horizontal = true;
+                        //Debug.Log(size);
                     }
                     else
                     {
@@ -436,6 +568,9 @@ public class GraphGeneration : MonoBehaviour
 
     private void AddRelations() //Add all Relations from SU scene
     {
+        TextAsset textAsset2 = Resources.Load<TextAsset>("GlobalParas");
+        string fileContent2 = textAsset2.text;
+        LoadParametersFromFile(fileContent2);
         Relation relation;
 
         for (int i = 0; i < SceneObjects.Count; i++)
@@ -513,6 +648,8 @@ public class GraphGeneration : MonoBehaviour
             }
 
         }
+
+       
 
         // Apply reverse relationship a -> b add b reverse relation -> a
 
@@ -647,6 +784,132 @@ public class GraphGeneration : MonoBehaviour
         Debug.DrawLine(points[0], points[4], color, duration);
         Debug.DrawLine(points[1], points[5], color, duration);
     }
+
+    /*public RelationType Relationpanduan_angle(SceneObject_Unity objectA, Vector3 objectB) // x: right, z: FORWARD 
+    {
+        Vector3 sizeA = objectA.Bounds.size;
+        Vector3 centerAtoB = objectB - objectA.Position.position;
+
+        Vector3 longSideDirection = Vector3.zero;
+        Vector3 shortSideDirection = Vector3.zero;
+
+        float depth = HMatchingRange;  // 预设的深度范围
+
+        // 确定长边和短边方向
+        if (sizeA.x > sizeA.y && sizeA.x > sizeA.z)
+        {
+            longSideDirection = objectA.Position.right;
+            shortSideDirection = (sizeA.y > sizeA.z) ? objectA.Position.forward : objectA.Position.up;
+        }
+        else if (sizeA.y > sizeA.x && sizeA.y > sizeA.z)
+        {
+            longSideDirection = objectA.Position.up;
+            shortSideDirection = (sizeA.x > sizeA.z) ? objectA.Position.forward : objectA.Position.right;
+        }
+        else
+        {
+            longSideDirection = objectA.Position.forward;
+            shortSideDirection = (sizeA.x > sizeA.y) ? objectA.Position.up : objectA.Position.right;
+        }
+
+        float distanceInLongDirection = Vector3.Dot(longSideDirection.normalized, centerAtoB);
+        float distanceInShortDirection = Vector3.Dot(shortSideDirection.normalized, centerAtoB);
+
+        float angleWithLongSide = Vector3.Angle(centerAtoB, longSideDirection.normalized);
+        float angleWithShortSide = Vector3.Angle(centerAtoB, shortSideDirection.normalized);
+
+        float overlapRate = CalculateOverlapRate(objectA, objectB);
+        
+
+        if (Vector3.Distance(objectA.Position.position, objectB) <= 2.0f && Mathf.Abs(centerAtoB.y) >= VMatchingRange)
+        {
+            if (overlapRate >= 70) 
+            {
+                if (centerAtoB.y < 0)
+                return RelationType.Below;
+            else
+                return RelationType.Above;
+            }
+
+            
+        }
+
+        // 判断前后关系
+        if (Mathf.Abs(distanceInShortDirection) <= depth && Mathf.Abs(distanceInShortDirection) <= sizeA.z * 0.8 &&
+            Mathf.Abs(angleWithLongSide) <= MatchingAngle)
+        {
+            if (overlapRate > 70) 
+            {
+                return RelationType.None;  // 重合率过高，无法确定具体的空间关系
+            }
+
+            if (distanceInShortDirection > 0)
+            {
+                return RelationType.InFrontOf;
+            }
+            else
+            {
+                return RelationType.Behind;
+            }
+        }
+
+        // 判断左右关系
+        if (Mathf.Abs(distanceInLongDirection) <= depth && Mathf.Abs(distanceInLongDirection) <= sizeA.x * 0.8 &&
+            Mathf.Abs(angleWithShortSide) <= MatchingAngle)
+        {
+            if (overlapRate > 70) 
+            {
+                return RelationType.None;  // 重合率过高，无法确定具体的空间关系
+            }
+
+            if (distanceInLongDirection > 0)
+            {
+                return RelationType.Right;
+            }
+            else
+            {
+                return RelationType.Left;
+            }
+        }
+
+        return RelationType.None;
+    }*/
+
+    public float CalculateOverlapRate(SceneObject_Unity objectA, SceneObject_Unity objectB)
+    {
+        Bounds boundsA = objectA.Bounds;
+        Bounds boundsB = objectB.Bounds;
+
+        // 计算交集区域的最小和最大点
+        float minX = Mathf.Max(boundsA.min.x, boundsB.min.x);
+        float maxX = Mathf.Min(boundsA.max.x, boundsB.max.x);
+        float minY = Mathf.Max(boundsA.min.y, boundsB.min.y);
+        float maxY = Mathf.Min(boundsA.max.y, boundsB.max.y);
+
+        // 计算重叠区域的宽度和高度
+        float width = maxX - minX;
+        float height = maxY - minY;
+
+        // 如果宽度或高度小于0，则没有重叠
+        if (width < 0 || height < 0)
+        {
+            return 0.0f; // 无重叠
+        }
+
+        // 计算重叠面积
+        float overlapArea = width * height;
+
+        // 计算两个矩形的面积
+        float areaA = boundsA.size.x * boundsA.size.y;
+        float areaB = boundsB.size.x * boundsB.size.y;
+
+        // 计算重合率
+        float minArea = Mathf.Min(areaA, areaB);
+        float overlapRate = (overlapArea / minArea) * 100;  
+        return overlapRate;
+    }
+
+
     public RelationType Relationpanduan(SceneObject_Unity objectA, Vector3 objectB) ////x: right z : FORWARD 
     {
         Vector3 sizeA = objectA.Bounds.size;
@@ -656,10 +919,10 @@ public class GraphGeneration : MonoBehaviour
         Vector3 longSideDirection = new Vector3();
         Vector3 shortSideDirection = new Vector3();
 
-        //DrawBoundBoxLine(objectA.Bounds, Color.red, 1f, 300f);
+        DrawBoundBoxLine(objectA.Bounds, Color.red, 1f, 300f);
 
 
-        float depth = 5.0f;
+        float depth = HMatchingRange;
 
         if (sizeA.x > sizeA.y && sizeA.x > sizeA.z)
         {
@@ -680,8 +943,10 @@ public class GraphGeneration : MonoBehaviour
         float distanceInLongDirection = Vector3.Dot(longSideDirection.normalized, centerAtoB);
         float distanceInShortDirection = Vector3.Dot(shortSideDirection.normalized, centerAtoB);
 
+        float angleWithLongSide = Vector3.Angle(centerAtoB, longSideDirection.normalized);
+        float angleWithShortSide = Vector3.Angle(centerAtoB, shortSideDirection.normalized);
 
-        if (Vector3.Distance(objectA.Position.position, objectB) <= 1.0f && Mathf.Abs(centerAtoB.y) >= 0.3f)
+        if (Vector3.Distance(objectA.Position.position, objectB) <= 1.0f && Mathf.Abs(centerAtoB.y) >= VMatchingRange)
         {
             if (centerAtoB.y < 0)
                 return RelationType.Below;
@@ -741,13 +1006,13 @@ public class GraphGeneration : MonoBehaviour
         Vector3 longSideDirection = new Vector3();
         Vector3 shortSideDirection = new Vector3();
 
-        //DrawBoundBoxLine(objectA.Bounds, Color.red, 1f, 300f);
+        DrawBoundBoxLine(objectA.Bounds, Color.red, 1f, 300f);
 
 
         float mindepth = 1.0f; //test= 1.0
-        float maxdepth = 3.0f;
-        maxdepth = SpecialRelations(relation);
-        if (maxdepth == 2.0f)
+        float maxdepth = HMatchingRange; //defualt 3.0
+        //maxdepth = SpecialRelations(relation);
+        if (maxdepth <= 2.0f)
             mindepth = 0.0f;
 
         if (sizeA.x > sizeA.y && sizeA.x > sizeA.z)
@@ -772,8 +1037,11 @@ public class GraphGeneration : MonoBehaviour
         float distanceInLongDirection = Vector3.Dot(longSideDirection.normalized, centerAtoB);
         float distanceInShortDirection = Vector3.Dot(shortSideDirection.normalized, centerAtoB);
 
+        float angleWithLongSide = Vector3.Angle(centerAtoB, longSideDirection.normalized);
+        float angleWithShortSide = Vector3.Angle(centerAtoB, shortSideDirection.normalized);
+
         float dotResult = Vector3.Dot(centerAtoB.normalized, objectA.Position.up);
-        if (Vector3.Distance(objectA.Position.position, objectB) <= 1.0f && Mathf.Abs(centerAtoB.y) <= 0.3f && dotResult <= -0.7f) // 使用-0.95而不是-1，以留出一点容错空间
+        if (Vector3.Distance(objectA.Position.position, objectB) <= 1.0f && Mathf.Abs(centerAtoB.y) <= VMatchingRange && dotResult <= -0.7f) // 使用-0.95而不是-1，以留出一点容错空间
         {
             return RelationType.Below;
         }
@@ -866,14 +1134,14 @@ public class GraphGeneration : MonoBehaviour
         }
 
         TextAsset textAsset1 = Resources.Load<TextAsset>("OutputRelations");
-        TextAsset textAsset2 = Resources.Load<TextAsset>("GlobalParas");
+        //TextAsset textAsset2 = Resources.Load<TextAsset>("GlobalParas");
         //
 
         //
         string fileContent1 = textAsset1.text;
-        string fileContent2 = textAsset2.text;
+        //string fileContent2 = textAsset2.text;
         GameRelations = LoadRelationsFromFile1(fileContent1);
-        LoadParametersFromFile(fileContent2);
+        //LoadParametersFromFile(fileContent2);
 
 
         //GameRelations = LoadRelationsFromFile("OutputRelations.txt");
@@ -1236,8 +1504,19 @@ public class GraphGeneration : MonoBehaviour
                         SceneObject_Unity otherNode = currentNode == relation.StartNode ? relation.EndNode : relation.StartNode;
                         if (relation.Relationship != RelationType.Above)
                         {
-                            Vector3 targetPostition = new Vector3(otherNode.Position.position.x, myObject.transform.position.y, otherNode.Position.position.z);
-                            myObject.transform.LookAt(targetPostition);
+                            if(relation.Relationship == RelationType.InFrontOf && otherNode.Category == "Wall")
+                            {
+                                Vector3 wallNormal = otherNode.Position.transform.forward; // 对于Unity中的GameObject，forward表示对象的前方向，也就是法线方向
+
+                                // 旋转物体以面向墙的内侧
+                                myObject.transform.forward = -wallNormal;
+                            }
+                            else
+                            {
+                                Vector3 targetPostition = new Vector3(otherNode.Position.position.x, myObject.transform.position.y, otherNode.Position.position.z);
+                                myObject.transform.LookAt(targetPostition);
+                            }
+                            
                         }
                         else
                         {
@@ -1245,18 +1524,80 @@ public class GraphGeneration : MonoBehaviour
 
                             eulerRot.x = 0;
                             eulerRot.z = 0;
+                            
 
                             // 应用新的旋转
                             if (currentNode.Category == "Character")
                             {
-                                myObject.transform.rotation = SitOppositeBackOfChair(myObject.transform.position, 15.0f, Quaternion.Euler(eulerRot));
+                                //eulerRot.y += 90.0f; ;
+                                myObject.transform.rotation = Quaternion.Euler(eulerRot);
+                                //myObject.transform.rotation = SitOppositeBackOfChair(myObject.transform.position, 15.0f, Quaternion.Euler(eulerRot));
                             }
 
                             else { myObject.transform.rotation = Quaternion.Euler(eulerRot); }
+
+                            if(currentNode.Category == "Terrain")//Scale to same size
+                            {
+                                
+
+                                if (otherNode.Category == "Floor")
+                                {
+                                    
+                                  
+                                }
+                                else
+                                {
+                                    Bounds boundsB = CalculateCompositeBounds(myObject); //虚拟物体的bounds
+                                    Bounds boundsA = otherNode.Bounds;
+                                    bool xLongerInOther = boundsA.size.x > boundsA.size.z;
+                                    bool xLongerInBoundsB = boundsB.size.x > boundsB.size.z;
+
+                                    float scaleX = 1;
+                                    float scaleZ = 1;
+
+                                    if ((xLongerInOther && xLongerInBoundsB) || (!xLongerInOther && !xLongerInBoundsB))
+                                    {
+                                        // 使用第二组公式
+                                        scaleX = boundsA.size.x / boundsB.size.x;
+                                        scaleZ = boundsA.size.z / boundsB.size.z;
+                                    }
+                                    else
+                                    {
+                                        // 使用第一组公式
+                                        scaleX = boundsA.size.x / boundsB.size.z;
+                                        scaleZ = boundsA.size.z / boundsB.size.x;
+                                    }
+                                    // 计算缩放比例
+                                    /*float scaleX = otherNode.Bounds.size.x / boundsB.size.z;
+                                    float scaleZ = otherNode.Bounds.size.z / boundsB.size.x;
+
+                                    //float scaleX = otherNode.Bounds.size.x / boundsB.size.x; //根据情况判断，跟原点到物体的连线有关系，bbx界定x和z轴
+                                    //float scaleZ = otherNode.Bounds.size.z / boundsB.size.z;*/
+
+                                    float balancedScale = Mathf.Min(scaleX, scaleZ); // 可选：选择一个更加平衡的缩放比例
+
+                                    myObject.transform.localScale = new Vector3(scaleX, balancedScale, scaleZ);
+
+                                    bool isALongerInX = boundsA.size.x > boundsA.size.z;
+                                    bool isBLongerInX = boundsB.size.x > boundsB.size.z;
+
+                                    // 计算需要的旋转
+                                    // 如果两个物体的长边方向不一致，则需要旋转物体B
+                                    if (isALongerInX != isBLongerInX)
+                                    {
+                                        // 以Y轴为中心旋转90度，使得长短边匹配
+                                        myObject.transform.Rotate(0, 90, 0, Space.World);
+                                    }
+
+                                }
+
+                                
+                            }
                         }
 
                         currentNode.Position.position = new Vector3(myPosition.Value.x, myPosition.Value.y + myObject.GetComponent<BoxCollider>().bounds.size.y, myPosition.Value.z);
                         currentNode.Position.rotation = myObject.transform.rotation;
+                        ObjectsToPlace.Add(myObject);
 
                     }
                     break;
@@ -1268,6 +1609,19 @@ public class GraphGeneration : MonoBehaviour
         }
 
 
+    }
+
+    Bounds CalculateCompositeBounds(GameObject compositeObject)
+    {
+        Renderer[] childRenderers = compositeObject.GetComponentsInChildren<Renderer>();
+        if (childRenderers.Length == 0) return new Bounds(compositeObject.transform.position, Vector3.zero);
+
+        Bounds compositeBounds = childRenderers[0].bounds;
+        foreach (Renderer renderer in childRenderers)
+        {
+            compositeBounds.Encapsulate(renderer.bounds);
+        }
+        return compositeBounds;
     }
 
     public Vector3? VirtualPlaceOnReal(GameObject Prefab, Relation relation, bool isReverse) // One of the node is real
@@ -1296,7 +1650,7 @@ public class GraphGeneration : MonoBehaviour
                         {
                             return relation1.EndNode.Position.position + new Vector3(0, 0.6f, 0);
                         }
-                        return relation1.EndNode.Position.position;
+                        return relation1.EndNode.Position.position; //ToDO: 写一些避免重合的代码，参考底下的
                     }
                     else
                     {
@@ -1308,6 +1662,8 @@ public class GraphGeneration : MonoBehaviour
                         // 发射一条射线从物体下方向下
                         RaycastHit[] hits;
                         hits = Physics.RaycastAll(new Vector3(platformposition.x, platformposition.y + 0.1f, platformposition.z), Vector3.down, raycastDistance);
+                        Debug.DrawRay(new Vector3(platformposition.x, platformposition.y + 0.1f, platformposition.z), Vector3.down, Color.yellow, 500.0f);
+
 
                         RaycastHit nearestHit = GetNearestPlatformHit(hits);
 
@@ -1315,14 +1671,22 @@ public class GraphGeneration : MonoBehaviour
                         if (nearestHit.transform != null) // 如果找到了最近的Platform
                         {
                             platformBounds = nearestHit.transform.gameObject.GetComponent<MeshRenderer>().bounds;
-                        }
 
-                        if (relation1.StartNode.Float)
+                            if (relation1.StartNode.Float)
+                            {
+                                return PlatformPosition(Prefab, platformposition, platformBounds, nearestHit.transform.gameObject.name) + new Vector3(0, 0.6f, 0);
+                            }
+                            return PlatformPosition(Prefab, platformposition, platformBounds, nearestHit.transform.gameObject.name);
+
+                        }else
+
                         {
-                            return PlatformPosition(Prefab, platformposition, platformBounds, nearestHit.transform.gameObject.name) + new Vector3(0, 0.6f, 0);
+                            Debug.Log("Raycast is null!");
+                            return new Vector3(0, 0, 0);
                         }
 
-                        return PlatformPosition(Prefab, platformposition, platformBounds, nearestHit.transform.gameObject.name);
+                       
+
 
                     }
 
@@ -1330,7 +1694,7 @@ public class GraphGeneration : MonoBehaviour
                 }
                 else
                 {
-                    return new Vector3(relation1.EndNode.Position.position.x, relation1.EndNode.Position.position.y - 0.5f, relation1.EndNode.Position.position.z);
+                    return new Vector3(relation1.EndNode.Position.position.x, relation1.EndNode.Position.position.y - 0.35f, relation1.EndNode.Position.position.z);
                 }
 
             }
@@ -1345,7 +1709,7 @@ public class GraphGeneration : MonoBehaviour
                         return null; // 结束函数，因为我们不处理墙的其他关系类型
                     }
 
-                    float step = 0.4f;
+                    float step = 0.1f;
                     List<Vector3> searchDirections = new List<Vector3> { Vector3.forward }; // 墙只考虑前方
 
                     for (float distance = step; distance <= 2; distance += step)
@@ -1407,7 +1771,6 @@ public class GraphGeneration : MonoBehaviour
                     if (closestPosition != Vector3.zero)
                     {
                         putPosition = closestPosition;
-                        Debug.Log(putPosition);
                         return putPosition;
                     }
 
@@ -1611,6 +1974,7 @@ public class GraphGeneration : MonoBehaviour
     public Vector3 PlatformPosition(GameObject Object, Vector3 Position, Bounds bound, string colliderObject)
     {
         //TMP.text += Object.name;
+        List<Vector3> goodPoints = new List<Vector3>();
         BoxCollider Collider = Object.GetComponent<BoxCollider>();
         Vector3 colliderSize = Collider.bounds.size;
         // 检测是否与其他物体发生重叠
@@ -1625,6 +1989,24 @@ public class GraphGeneration : MonoBehaviour
         float maxXOffset = extent.x;
         float maxZOffset = extent.z;
 
+        Collider[] collidersAtCenter = Physics.OverlapBox(center, colliderSize);
+        bool isCenterOccupied = false;
+        foreach (var collider in collidersAtCenter)
+        {
+            // 假设 colliderObject 是一个 GameObject 的引用，你想检查 collider 不是这个 GameObject 的一部分
+            if (collider.gameObject.name != colliderObject && !collider.gameObject.name.StartsWith("SpatialMesh") && !collider.gameObject.name.StartsWith("PlatformMesh") && !collider.gameObject.name.StartsWith("BackgroundMesh"))
+            {
+                isCenterOccupied = true;
+                break; // 找到了一个非忽略的碰撞器，可以直接跳出循环
+            }
+        }
+
+        if (!isCenterOccupied)
+        {
+            // 如果中心位置未被占用，直接返回中心位置
+            return center;
+        }
+
         // 从中心开始向四周进行搜索
         for (float xOffset = 0; xOffset <= maxXOffset; xOffset += gridSize)
         {
@@ -1635,6 +2017,7 @@ public class GraphGeneration : MonoBehaviour
                 {
                     Vector3 representativePoint = center + Vector3.Scale(direction, new Vector3(xOffset, 0, zOffset));
                     Collider[] colliders = Physics.OverlapBox(representativePoint, colliderSize);
+                    
 
                     // 检查代表性点是否在边界内
                     if (!bound.Contains(representativePoint))
@@ -1648,7 +2031,7 @@ public class GraphGeneration : MonoBehaviour
                         int ignoredCollidersCount = 0;
                         foreach (Collider collider in colliders)
                         {
-                            if (collider.gameObject.name == colliderObject || collider.gameObject.name.StartsWith("SpatialMesh"))
+                            if (collider.gameObject.name == colliderObject || collider.gameObject.name.StartsWith("SpatialMesh") || collider.gameObject.name.StartsWith("PlatformMesh") || collider.gameObject.name.StartsWith("BackgroundMesh"))
                             {
                                 ignoredCollidersCount++;
                             }
@@ -1670,14 +2053,31 @@ public class GraphGeneration : MonoBehaviour
                         continue;
                     }
 
+                    goodPoints.Add(representativePoint);              
 
-                    return representativePoint;
+                    //return representativePoint;
                 }
             }
         }
 
-        return Position;
+        //return Position;
+        if (goodPoints.Count > 0)
+        {
+            // 将点分为几个区域，这里以距离中心点的四分位数为例
+            var distances = goodPoints.Select(point => (point - center).sqrMagnitude).ToList();
+            distances.Sort(); // 对距离进行排序
+            float thresholdDistance = distances[Mathf.Min(distances.Count / 4, distances.Count - 1)]; // 使用四分位距离作为阈值
 
+            // 从离中心点最近的四分之一点中随机选择
+            var nearestPoints = goodPoints.Where(point => (point - center).sqrMagnitude <= thresholdDistance).ToList();
+
+            // 从这些最近的点中随机选择一个点
+            return nearestPoints[UnityEngine.Random.Range(0, nearestPoints.Count)];
+        }
+        else
+        {
+            return Position; // 如果没有找到合适的点，返回原始位置
+        }
 
     }
     public List<GameObject> FloorSearch(List<GameObject> Floors)
@@ -2016,13 +2416,86 @@ public class GraphGeneration : MonoBehaviour
     public void DoPlace()
     {
         FloorSize();
+        Stopwatch stopwatch = new Stopwatch();
+
+        Stopwatch stopwatch1 = new Stopwatch();
+        Stopwatch stopwatch2 = new Stopwatch();
+        Stopwatch stopwatch3 = new Stopwatch();
+
+
+        // 开始计时
+        stopwatch1.Start();
+        stopwatch.Start();
+
         AddSceneObjects();
+        ///从场景中标记物体获取对应的scene_object
+        for (int i = 0; i < SceneObjects.Count; i++)
+        {
+            // 获取当前对象的Position.position
+            Vector3 objPosition = SceneObjects[i].Position.position;
+            if (Mathf.Abs(objPosition.x - LabelPosition.x) <= 0.1f &&
+                Mathf.Abs(objPosition.y - LabelPosition.y) <= 0.1f &&
+                Mathf.Abs(objPosition.z - LabelPosition.z) <= 0.1f)
+            {
+
+                Debug.Log("Platform"+ SceneObjects[i].Size + SceneObjects[i].Height);
+                SceneObjects[i].Category = "Platform";
+
+            }
+
+            // 检查坐标是否在误差范围内
+            if (Mathf.Abs(objPosition.x - LabelPosition1.x) <= 0.1f &&
+                Mathf.Abs(objPosition.y - LabelPosition1.y) <= 0.1f &&
+                Mathf.Abs(objPosition.z - LabelPosition1.z) <= 0.1f)
+            {
+                // 如果是，修改该元素的Category为"Unknown"
+
+                Debug.Log("Unknown");
+                SceneObjects[i].Category = "Unknown";
+            }
+
+            if (Mathf.Abs(objPosition.x - LabelPosition2.x) <= 0.1f &&
+                Mathf.Abs(objPosition.y - LabelPosition2.y) <= 0.1f &&
+                Mathf.Abs(objPosition.z - LabelPosition2.z) <= 0.1f)
+            {
+                // 如果是，修改该元素的Category为"Unknown"
+
+                Debug.Log("Chair");
+                SceneObjects[i].Category = "Chair";
+            }
+        }
+        
         AddRelations();
+        stopwatch1.Stop();
+
+        // 打印代码执行时间 (以毫秒为单位)
+        //titleText.text = " Real Scene Graph Creation " + stopwatch1.ElapsedMilliseconds + " ms";
+
+
         AddGameSceneObjects();
+        stopwatch2.Start();
+
 
         var (ARSceneObjects, ARRelations) = SceneGraphMatching.CompareNodes(SceneObjects, GameSceneObjects, Relations, GameRelations);
 
+        stopwatch2.Stop();
+
+        // 打印代码执行时间 (以毫秒为单位)
+        //titleText.text += " Matching" + stopwatch2.ElapsedMilliseconds + " ms";
+
+
+        stopwatch3.Start();
+
+
         GameObjectCreate(ARRelations, ARSceneObjects);
+
+        stopwatch3.Stop();
+        stopwatch.Stop();
+
+        // 打印代码执行时间 (以毫秒为单位)
+        //titleText.text += " Content Placement" + stopwatch3.ElapsedMilliseconds + " ms";
+        //titleText.text += " Sum" + stopwatch.ElapsedMilliseconds + " ms";
+
 
         Debug.Log("Real relations number: " + Relations.Count + " Game relations number: " + GameRelations.Count + " AR relations number: " + ARRelations.Count);
 
@@ -2032,8 +2505,8 @@ public class GraphGeneration : MonoBehaviour
             {
                 if (relation.Relationship != RelationType.None)
                 {
-                    string log = relation.StartNode.Category + relation.StartNode.ID +
-                                 " -> " + relation.EndNode.Category + relation.EndNode.ID + " [label = \"" + relation.Relationship + "\"]\n";
+                    string log = relation.StartNode.Category + relation.StartNode.ID + relation.StartNode.Size + 
+                                 " -> " + relation.EndNode.Category + relation.EndNode.ID + relation.EndNode.Size + " [label = \"" + relation.Relationship + "\"]\n";
 
                     writer.WriteLine(log);
                 }
@@ -2065,6 +2538,7 @@ public class GraphGeneration : MonoBehaviour
 
                     writer.WriteLine(log);
                 }
+
             }
         }
 
@@ -2072,22 +2546,151 @@ public class GraphGeneration : MonoBehaviour
 
     }
 
-
-
-    public void ClickButton1()
+    public void SaveSceneObjectsPositionsToFile(string filePath, List<GameObject> gameobjects)
     {
-        Debug.Log("Button1");
+        
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            foreach (var obj in gameobjects)
+            {
+                //titleText.text += obj.name;
+
+                string prefabName = obj.name.Split('(')[0]; // 移除"(Clone)"
+                Vector3 pos = obj.transform.position;
+                Quaternion rot = obj.transform.rotation;
+                Vector3 scale = obj.transform.localScale;
+
+                writer.WriteLine($"{prefabName};{pos.x},{pos.y},{pos.z};{rot.x},{rot.y},{rot.z},{rot.w};{scale.x},{scale.y},{scale.z}");
+            }
+        }
+        //titleText.text += "Save current gameobjects!";
+
 
     }
 
-    public void ClickButton2()
+    public void LoadSceneObjects(string filePath)
     {
-        Debug.Log("Button2");
+        if (!File.Exists(filePath)) return;
 
+        string[] lines = File.ReadAllLines(filePath);
+        foreach (string line in lines)
+        {
+            string[] parts = line.Split(';');
+            string prefabName = parts[0];
+            Vector3 position = new Vector3(
+                float.Parse(parts[1].Split(',')[0]),
+                float.Parse(parts[1].Split(',')[1]),
+                float.Parse(parts[1].Split(',')[2]));
+            Quaternion rotation = new Quaternion(
+                float.Parse(parts[2].Split(',')[0]),
+                float.Parse(parts[2].Split(',')[1]),
+                float.Parse(parts[2].Split(',')[2]),
+                float.Parse(parts[2].Split(',')[3]));
+            Vector3 scale = new Vector3(
+                float.Parse(parts[3].Split(',')[0]),
+                float.Parse(parts[3].Split(',')[1]),
+                float.Parse(parts[3].Split(',')[2]));
+
+            GameObject prefab = Resources.Load<GameObject>(prefabName);
+            if (prefab)
+            {
+                GameObject obj = Instantiate(prefab, position, rotation);
+                obj.transform.localScale = scale;
+                Debug.Log("Load Gameobject: " +  obj.name);
+                //titleText.text = string.Join("\n", lines);
+            }
+            else
+            {
+                Debug.LogError("Prefab not found: " + prefabName);
+            }
+        }
+    }
+
+    public void WorldLockingLoad()
+    {
+        WorldLockingManager.GetInstance().Load();
+    }
+
+    public void ClickButton1()//Save current gameobjects' positions
+    {
+        Debug.Log("Save current gameobjects!");
+        string path = System.IO.Path.Combine(Application.persistentDataPath, "CurrentObjects.txt");
+        SaveSceneObjectsPositionsToFile(path, ObjectsToPlace);
+    }
+
+    public void ClickButton2()//Load last positions
+    {
+        Debug.Log("Load last gameobjects!");
+        string path = System.IO.Path.Combine(Application.persistentDataPath, "CurrentObjects.txt");
+        LoadSceneObjects(path);
     }
 
     public void ClickButton3()
     {
         Debug.Log("Button3");
     }
+
+    public void LabelPlatform()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+
+        // 执行射线检测
+        if (Physics.Raycast(ray, out hit))
+        {
+            // 射线与物体相交，获取该物体的GameObject
+            GameObject hitObject = hit.collider.gameObject;
+
+            // 在此处添加你的逻辑，例如处理选中的物体
+            Debug.Log("Hit Object: " + hitObject.name);
+
+            if(!hitObject.name.StartsWith("SpatialMesh"))
+            {
+                LabelPosition = hitObject.transform.position;
+                hitObject.GetComponent<Renderer>().material = newMaterial;
+            }
+            
+            
+
+        }
+    }
+
+    public void LabelUnknown()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+
+        // 执行射线检测
+        if (Physics.Raycast(ray, out hit))
+        {
+            // 射线与物体相交，获取该物体的GameObject
+            GameObject hitObject = hit.collider.gameObject;
+
+            Debug.Log("Hit Object: " + hitObject.name);
+
+            LabelPosition1 = hitObject.transform.position;
+
+        }
+    }
+
+    public void LabelChair()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+
+        // 执行射线检测
+        if (Physics.Raycast(ray, out hit))
+        {
+            // 射线与物体相交，获取该物体的GameObject
+            GameObject hitObject = hit.collider.gameObject;
+
+            Debug.Log("Hit Object: " + hitObject.name);
+
+            LabelPosition2 = hitObject.transform.position;
+
+        }
+    }
+
+
+
 }

@@ -18,6 +18,13 @@ MonoBehaviour:
   - id: 1
   - id: 2
   - id: 3
+  - id: 4
+  - id: 5
+  - id: 6
+  - id: 7
+  - id: 8
+  - id: 9
+  - id: 10
   edges:
   - GUID: ad368def-3542-4711-a47b-da0874c3a8f5
     owner: {fileID: 11400000}
@@ -27,18 +34,74 @@ MonoBehaviour:
     outputFieldName: Above
     inputPortIdentifier: 
     outputPortIdentifier: 
-  - GUID: 784f4288-2cd6-4c4d-8216-2a1dc1e5aeb9
+  - GUID: 42cba494-9d79-4cb8-bba1-979f348843cc
     owner: {fileID: 11400000}
-    inputNodeGUID: 622ff5c7-95dc-493b-a29f-9f94c6221290
-    outputNodeGUID: dd59658e-0657-4d34-a68d-979919186c65
+    inputNodeGUID: d13f73b1-8226-4068-9984-ff7ee447bb06
+    outputNodeGUID: c1257bbd-5ed6-4cc4-abdb-008de4298051
     inputFieldName: input
     outputFieldName: Above
     inputPortIdentifier: 
     outputPortIdentifier: 
-  - GUID: db41163e-6a09-4e77-9ddd-468d28553d7b
+  - GUID: 79d3a218-3d2d-4b49-812f-25a9a98e8cba
+    owner: {fileID: 11400000}
+    inputNodeGUID: 94060a93-11b6-420f-933b-67530841c68e
+    outputNodeGUID: 3bd43da6-613b-45ef-92ac-599c8db0198b
+    inputFieldName: input
+    outputFieldName: Above
+    inputPortIdentifier: 
+    outputPortIdentifier: 
+  - GUID: e3910691-6aaa-4025-8268-be67d859f4a2
+    owner: {fileID: 11400000}
+    inputNodeGUID: 2e8834aa-8546-471f-ab77-f1bc440b0b21
+    outputNodeGUID: d13f73b1-8226-4068-9984-ff7ee447bb06
+    inputFieldName: input
+    outputFieldName: FrontBack
+    inputPortIdentifier: 
+    outputPortIdentifier: 
+  - GUID: 7f613abb-05bc-4a52-ace4-ef74e106ed31
+    owner: {fileID: 11400000}
+    inputNodeGUID: d13f73b1-8226-4068-9984-ff7ee447bb06
+    outputNodeGUID: 94060a93-11b6-420f-933b-67530841c68e
+    inputFieldName: input
+    outputFieldName: RightLeft
+    inputPortIdentifier: 
+    outputPortIdentifier: 
+  - GUID: 7cd5ea42-3a25-4e82-aa81-cd52763d89ed
     owner: {fileID: 11400000}
     inputNodeGUID: 2e8834aa-8546-471f-ab77-f1bc440b0b21
     outputNodeGUID: 622ff5c7-95dc-493b-a29f-9f94c6221290
+    inputFieldName: input
+    outputFieldName: Below
+    inputPortIdentifier: 
+    outputPortIdentifier: 
+  - GUID: 5efa95c4-abeb-49c8-ac86-1831776981fb
+    owner: {fileID: 11400000}
+    inputNodeGUID: d13f73b1-8226-4068-9984-ff7ee447bb06
+    outputNodeGUID: 82c6136c-c7a2-4d5b-8098-06a626e1b6a8
+    inputFieldName: input
+    outputFieldName: Around
+    inputPortIdentifier: 
+    outputPortIdentifier: 
+  - GUID: a2da6d2d-1559-44c6-9cdd-8ba57768e559
+    owner: {fileID: 11400000}
+    inputNodeGUID: 2e8834aa-8546-471f-ab77-f1bc440b0b21
+    outputNodeGUID: 89e029d1-ec1a-4fb9-880a-58eb7a2cf84f
+    inputFieldName: input
+    outputFieldName: Around
+    inputPortIdentifier: 
+    outputPortIdentifier: 
+  - GUID: 2ef0d155-585e-48ef-a7cb-5df518f6f7a3
+    owner: {fileID: 11400000}
+    inputNodeGUID: 89e029d1-ec1a-4fb9-880a-58eb7a2cf84f
+    outputNodeGUID: 923f2c23-656a-46e0-ba8c-61e3988468d1
+    inputFieldName: input
+    outputFieldName: InFrontOf
+    inputPortIdentifier: 
+    outputPortIdentifier: 
+  - GUID: beb9e03b-e988-4c1e-931a-ca2cde0f457e
+    owner: {fileID: 11400000}
+    inputNodeGUID: 2e8834aa-8546-471f-ab77-f1bc440b0b21
+    outputNodeGUID: 7b9dfbbb-c8a4-4d11-bc20-26d7c0e728b4
     inputFieldName: input
     outputFieldName: Around
     inputPortIdentifier: 
@@ -50,8 +113,8 @@ MonoBehaviour:
   serializedParameterList: []
   stickyNotes: []
   nodeInspectorReference: {fileID: 0}
-  position: {x: 401.33334, y: 482, z: 0}
-  scale: {x: 0.32690176, y: 0.32690176, z: 1}
+  position: {x: -572, y: 474.66666, z: 0}
+  scale: {x: 0.65751624, y: 0.65751624, z: 1}
   references:
     version: 1
     00000000:
@@ -59,12 +122,12 @@ MonoBehaviour:
       data:
         nodeCustomName: 
         GUID: 2e8834aa-8546-471f-ab77-f1bc440b0b21
-        computeOrder: 3
+        computeOrder: 10
         position:
           serializedVersion: 2
-          x: 1020.6667
-          y: -814.0001
-          width: 368.66663
+          x: 2013.3335
+          y: -200.46246
+          width: 360.66663
           height: 540
         expanded: 0
         debug: 0
@@ -72,7 +135,7 @@ MonoBehaviour:
         id: 0
         Name: table
         Category: Table
-        Size: 0
+        Size: 0.82
         Height: 0
         Horizontal: 1
         Floating: 0
@@ -93,25 +156,25 @@ MonoBehaviour:
       type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
       data:
         nodeCustomName: 
-        GUID: dd59658e-0657-4d34-a68d-979919186c65
-        computeOrder: 1
+        GUID: ccd1b2a8-2dfd-49ba-ba55-ab561213f7bd
+        computeOrder: 0
         position:
           serializedVersion: 2
-          x: 880.67755
-          y: -137.32239
-          width: 354.66663
+          x: 1129.3331
+          y: -470.66653
+          width: 377.33337
           height: 540
         expanded: 0
         debug: 0
         nodeLock: 0
         id: 0
         Name: 
-        Category: Character
+        Category: Unknown
         Size: 0
         Height: 0
         Horizontal: 1
         Floating: 0
-        Prefab: {fileID: 7222567839056780369, guid: 42bc7c4635d6eac45b31d5425e41552e,
+        Prefab: {fileID: 5951087263869751364, guid: 06af353776286884aa64b5294d230e8a,
           type: 3}
         output: 0
         InFrontOf: 0
@@ -128,25 +191,25 @@ MonoBehaviour:
       type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
       data:
         nodeCustomName: 
-        GUID: ccd1b2a8-2dfd-49ba-ba55-ab561213f7bd
-        computeOrder: 0
+        GUID: 622ff5c7-95dc-493b-a29f-9f94c6221290
+        computeOrder: 6
         position:
           serializedVersion: 2
-          x: 275.58286
-          y: -736.00006
-          width: 359.2
-          height: 542.4
+          x: 635.3334
+          y: -685.9397
+          width: 346.66663
+          height: 540
         expanded: 0
         debug: 0
         nodeLock: 0
         id: 0
         Name: 
         Category: Unknown
-        Size: 0
+        Size: 0.19
         Height: 0
         Horizontal: 1
         Floating: 0
-        Prefab: {fileID: 8407579583691577337, guid: a8e81966ba49b8b4399e91334e61852f,
+        Prefab: {fileID: 596306382425841962, guid: b82bae762b5696b45aeddb06a3e22f3e,
           type: 3}
         output: 0
         InFrontOf: 0
@@ -163,25 +226,270 @@ MonoBehaviour:
       type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
       data:
         nodeCustomName: 
-        GUID: 622ff5c7-95dc-493b-a29f-9f94c6221290
+        GUID: 82c6136c-c7a2-4d5b-8098-06a626e1b6a8
+        computeOrder: 4
+        position:
+          serializedVersion: 2
+          x: 2345.256
+          y: -1084.6666
+          width: 363.3335
+          height: 540.00006
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        id: 0
+        Name: 
+        Category: Unknown
+        Size: 0
+        Height: 0
+        Horizontal: 1
+        Floating: 0
+        Prefab: {fileID: 8179178382144233957, guid: ddeb76559277e6048a73929742a59791,
+          type: 3}
+        output: 0
+        InFrontOf: 0
+        Behind: 0
+        Right: 0
+        Left: 0
+        Below: 0
+        Above: 0
+        FrontBack: 0
+        RightLeft: 0
+        Around: 0
+        input: 0
+    00000004:
+      type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: 94060a93-11b6-420f-933b-67530841c68e
+        computeOrder: 3
+        position:
+          serializedVersion: 2
+          x: 1089.1002
+          y: 173.1
+          width: 360.66663
+          height: 540
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        id: 0
+        Name: table
+        Category: Sofa
+        Size: 0.75
+        Height: 0
+        Horizontal: 1
+        Floating: 0
+        Prefab: {fileID: 3865740668490357696, guid: b59dac19c8e86fd41bcd74db1f658c7a,
+          type: 3}
+        output: 0
+        InFrontOf: 0
+        Behind: 0
+        Right: 0
+        Left: 0
+        Below: 0
+        Above: 0
+        FrontBack: 0
+        RightLeft: 0
+        Around: 0
+        input: 0
+    00000005:
+      type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: 3bd43da6-613b-45ef-92ac-599c8db0198b
         computeOrder: 2
         position:
           serializedVersion: 2
-          x: 1707.0636
-          y: -768.284
-          width: 368
-          height: 542.4
+          x: 536.96686
+          y: 255.91672
+          width: 445.3333
+          height: 540
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        id: 0
+        Name: 
+        Category: Unknown
+        Size: 0
+        Height: 0
+        Horizontal: 1
+        Floating: 0
+        Prefab: {fileID: 7573698957844177633, guid: 45f102f5c52bd8649b5272320e30eaff,
+          type: 3}
+        output: 0
+        InFrontOf: 0
+        Behind: 0
+        Right: 0
+        Left: 0
+        Below: 0
+        Above: 0
+        FrontBack: 0
+        RightLeft: 0
+        Around: 0
+        input: 0
+    00000006:
+      type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: d13f73b1-8226-4068-9984-ff7ee447bb06
+        computeOrder: 5
+        position:
+          serializedVersion: 2
+          x: 1507.2334
+          y: 132.00003
+          width: 382.66663
+          height: 540
         expanded: 0
         debug: 0
         nodeLock: 0
         id: 0
         Name: 
         Category: Chair
+        Size: 0.15
+        Height: 0
+        Horizontal: 1
+        Floating: 0
+        Prefab: {fileID: 1872378994139336562, guid: 6fb0454103365224c97ce1694b71322b,
+          type: 3}
+        output: 0
+        InFrontOf: 0
+        Behind: 0
+        Right: 0
+        Left: 0
+        Below: 0
+        Above: 0
+        FrontBack: 0
+        RightLeft: 0
+        Around: 0
+        input: 0
+    00000007:
+      type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: c1257bbd-5ed6-4cc4-abdb-008de4298051
+        computeOrder: 1
+        position:
+          serializedVersion: 2
+          x: 2695.3008
+          y: -655.3334
+          width: 366
+          height: 540
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        id: 0
+        Name: 
+        Category: Character
         Size: 0
         Height: 0
         Horizontal: 1
         Floating: 0
-        Prefab: {fileID: 4207129796016829939, guid: 14b0c3763c8674e4c88cc6478849513b,
+        Prefab: {fileID: 3772330203272225453, guid: ed93bc1d13bdaa747bfec7112d4999b5,
+          type: 3}
+        output: 0
+        InFrontOf: 0
+        Behind: 0
+        Right: 0
+        Left: 0
+        Below: 0
+        Above: 0
+        FrontBack: 0
+        RightLeft: 0
+        Around: 0
+        input: 0
+    00000008:
+      type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: 89e029d1-ec1a-4fb9-880a-58eb7a2cf84f
+        computeOrder: 8
+        position:
+          serializedVersion: 2
+          x: 1354.6925
+          y: -1010.6668
+          width: 357.33337
+          height: 540
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        id: 0
+        Name: 
+        Category: Wall
+        Size: 0
+        Height: 0
+        Horizontal: 0
+        Floating: 0
+        Prefab: {fileID: 5303826290929717217, guid: ca9a6eceb49b0c64ba5691c0c2d8d4dc,
+          type: 3}
+        output: 0
+        InFrontOf: 0
+        Behind: 0
+        Right: 0
+        Left: 0
+        Below: 0
+        Above: 0
+        FrontBack: 0
+        RightLeft: 0
+        Around: 0
+        input: 0
+    00000009:
+      type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: 923f2c23-656a-46e0-ba8c-61e3988468d1
+        computeOrder: 7
+        position:
+          serializedVersion: 2
+          x: 1804.4791
+          y: -967.5285
+          width: 357.33325
+          height: 540
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        id: 0
+        Name: 
+        Category: Unknown
+        Size: 0
+        Height: 0
+        Horizontal: 1
+        Floating: 0
+        Prefab: {fileID: 3393495332909046602, guid: a13e96764fb3515428db1cf3026269d1,
+          type: 3}
+        output: 0
+        InFrontOf: 0
+        Behind: 0
+        Right: 0
+        Left: 0
+        Below: 0
+        Above: 0
+        FrontBack: 0
+        RightLeft: 0
+        Around: 0
+        input: 0
+    0000000A:
+      type: {class: ObjectNode, ns: , asm: Assembly-CSharp}
+      data:
+        nodeCustomName: 
+        GUID: 7b9dfbbb-c8a4-4d11-bc20-26d7c0e728b4
+        computeOrder: 9
+        position:
+          serializedVersion: 2
+          x: 2516.6665
+          y: 11.318581
+          width: 383.3335
+          height: 540
+        expanded: 0
+        debug: 0
+        nodeLock: 0
+        id: 0
+        Name: 
+        Category: Unknown
+        Size: 0
+        Height: 0
+        Horizontal: 1
+        Floating: 0
+        Prefab: {fileID: 2700608970589353471, guid: 108f1c7dc1d8cdf4c9becb72620761c9,
           type: 3}
         output: 0
         InFrontOf: 0

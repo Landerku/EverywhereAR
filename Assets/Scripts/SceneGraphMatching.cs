@@ -12,18 +12,47 @@ public class SceneGraphMatching: MonoBehaviour
 
     public static bool IsMatchingNode(SceneObject_Unity n, SceneObject_Unity targetNode)
     {
-        // Now is strict mode
-
         if (n.Category == "Wall" && targetNode.Category == "Wall" && targetNode.Size >= n.Size)
             return true;
-        if ((n.Category == "Chair" && targetNode.Category == "Background") && (n.Horizontal == targetNode.Horizontal) && Math.Abs(targetNode.Size - n.Size) <= 0.1)
+        if ((n.Category == "Chair" && targetNode.Category == "Background") && (n.Horizontal == targetNode.Horizontal) && Math.Abs(targetNode.Size - n.Size) <= 0.15 && Math.Abs(targetNode.Height - n.Height) <= 0.3)
+        {
+            Debug.Log("1 "+targetNode.Category+targetNode.Size+targetNode.Height); 
             return true;
-        if (n.Category == "Table" && targetNode.Category == "Platform")//***For TEST***
+
+        }
+
+        /*if (n.Category == "Chair" && targetNode.Category == "Chair")
+            return true;*/
+        if ((n.Category == "Sofa" && targetNode.Category == "Background") && (n.Horizontal == targetNode.Horizontal) && targetNode.Size >= n.Size && Math.Abs(targetNode.Height - n.Height) <= 0.05)
+        {
+            //Debug.Log("2 " + targetNode.Category + targetNode.Size);
             return true;
-        if (n.Category == targetNode.Category && Math.Abs(targetNode.Size - n.Size) <= 1)
+        }
+
+
+        
+
+        /*if ((n.Category == "Chair" && targetNode.Category == "Background") && (n.Horizontal == targetNode.Horizontal) && Math.Abs(targetNode.Size - n.Size) <= 0.1)
+            return true;*/
+
+
+        if (n.Category == "Table" && targetNode.Category == "Platform")//***For TEST*** 
+        {
+            //Debug.Log("2" + targetNode.Category + targetNode.Size);
             return true;
-        if (Math.Abs(targetNode.Size - n.Size) <= 0.5 && Math.Abs(targetNode.Height - n.Height) <= 0.2 && n.Horizontal == targetNode.Horizontal && n.Category!="Unknown" && n.Category!="Character")
+
+        }
+
+        if ((n.Category == "Table" && targetNode.Category == "Background") && (n.Horizontal == targetNode.Horizontal) && Math.Abs(targetNode.Size - n.Size) <= 0.1)
             return true;
+
+        /*if (Math.Abs(targetNode.Size - n.Size) <= 0.2 && Math.Abs(targetNode.Height - n.Height) <= 0.1 && n.Horizontal == targetNode.Horizontal && n.Category!="Unknown" && n.Category!="Character")
+        {
+            Debug.Log("2 " + targetNode.Category + targetNode.Size + targetNode.Height);
+            return true;
+
+        
+        }*/
 
         return false;
     }
@@ -138,6 +167,7 @@ public class SceneGraphMatching: MonoBehaviour
                     break;
             }
 
+
             var realRelation = realRelations.Find(relation =>
                 IsMatchingNode(gameStartNode, relation.StartNode) &&
                 IsMatchingNode(gameEndNode, relation.EndNode) &&
@@ -148,7 +178,6 @@ public class SceneGraphMatching: MonoBehaviour
                 IsMatchingNode(gameEndNode, relation.EndNode) &&
                 acceptableRealRelationships.Contains(relation.Relationship));
 
-        
             /*var realRelation = realRelations.Find(relation =>
                 IsMatchingNode(gameStartNode, relation.StartNode) &&
                 IsMatchingNode(gameEndNode, relation.EndNode) &&
@@ -161,6 +190,7 @@ public class SceneGraphMatching: MonoBehaviour
 
             if (testRelation.Count != 0) //All matched
             {
+
                 matchRelations[gameRelation] = testRelation;
             }
 

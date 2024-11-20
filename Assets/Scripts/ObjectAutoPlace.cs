@@ -581,7 +581,7 @@ public class ObjectAutoPlace : MonoBehaviour
         float addedHeight = 0.5f; // 想增加的高度
 
         Vector3 colliderSize = Collider.bounds.size + new Vector3(0, addedHeight, 0);
-        Debug.Log("collider: " + colliderSize + Object.name);
+        //Debug.Log("collider: " + colliderSize + Object.name);
 
         // 检测是否与其他物体发生重叠
 
@@ -622,7 +622,7 @@ public class ObjectAutoPlace : MonoBehaviour
                 int ignoredCollidersCount = 0;
                 foreach (Collider collider in colliders)
                 {
-                    if (collider.gameObject.name == "FloorMesh" || collider.gameObject.name.StartsWith("SpatialMesh"))
+                    if (collider.gameObject.name.StartsWith("FloorMesh") || collider.gameObject.name.StartsWith("SpatialMesh"))
                     {
                         ignoredCollidersCount++;
                     }
@@ -637,7 +637,7 @@ public class ObjectAutoPlace : MonoBehaviour
 
             //是否在不规则形状上面
             GameObject UnderObject = GetObjectBelow(representativePoint + new Vector3(0.0f, 1.0f, 0.0f));
-            if (UnderObject == null || UnderObject.name != "FloorMesh")
+            if (UnderObject == null)
             {
                 continue;
             }

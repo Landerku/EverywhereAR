@@ -8,6 +8,11 @@
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.Events;
+    using System.Diagnostics;
+    using Debug = UnityEngine.Debug;
+    using UnityEngine.UIElements;
+    using TMPro;
+
 
     /// <summary>
     /// Maps inputs to actions.
@@ -97,6 +102,7 @@
         private Dictionary<KeyCode, InputAction> keyMap = new Dictionary<KeyCode, InputAction>();
         private Dictionary<string, InputAction> speechMap = new Dictionary<string, InputAction>();
         private GameObject suMinimap = null;
+        //private Stopwatch stopwatch = new Stopwatch();
         #endregion // Member Variables
 
         #region Unity Inspector Fields

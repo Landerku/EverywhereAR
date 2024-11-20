@@ -30,9 +30,9 @@ public class GameSceneEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        MatchingAngle = EditorGUILayout.Slider("Matching Angle", MatchingAngle, 45, 135);  // 参数分别为标签、当前值、最小值和最大值
-        HMatchingRange = EditorGUILayout.Slider("Horizontal Matching Range", HMatchingRange, 0, 5);
-        VMatchingRange = EditorGUILayout.Slider("Vertical Matching Range", VMatchingRange, 0, 5);
+        MatchingAngle = EditorGUILayout.Slider("Matching Angle", 40, 30, 135);  // 参数分别为标签、当前值、最小值和最大值
+        HMatchingRange = EditorGUILayout.Slider("Horizontal Matching Range", 1.5f, 0f, 5f);
+        VMatchingRange = EditorGUILayout.Slider("Vertical Matching Range", 0.3f, 0, 2f);
 
         SelectedStrategy = EditorGUILayout.Popup("Arrangement Strategy", SelectedStrategy, arrangementStrategies);
 
