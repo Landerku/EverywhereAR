@@ -3,7 +3,7 @@
 This repository is the official implementation of [**EverywhereAR**] under review in IEEE-TVCG.
 
 <p align="center" width="100%">
-<a target="_blank"><img src="figs/teaser.png" alt="EverywhereAR Overview" style="width: 60%; min-width: 200px; display: block; margin: auto;"></a>
+<a target="_blank"><img src="figs/teaser.png" alt="EverywhereAR Overview" style="width: 100%; min-width: 200px; display: block; margin: auto;"></a>
 </p>
 
 ## Introduction
@@ -13,6 +13,17 @@ This repository is the official implementation of [**EverywhereAR**] under revie
   - (2) A novel scene graphs integration algorithm for intelligently realizing game designs in various real scenes.
   - We also conduct 2 user studies, collecting feedback from a wide range of potential users. It would inspire more future works in this direction.
 
+### Interface
+<p align="center" width="100%">
+<a target="_blank"><img src="https://lh3.googleusercontent.com/d/1wLWBhKfEOQSjF5WynDrGXRbzb0MSM3UY" alt="Interface" style="width: 60%; min-width: 200px; display: block; margin: auto;"></a>
+</p>
+
+### Performance
+<p align="center" width="100%">
+<a target="_blank"><img src="https://lh3.googleusercontent.com/d/1-FWqe1mZpm0Nfx828-sENFpRniz7jNFJ" alt="Performance" style="width: 80%; min-width: 200px; display: block; margin: auto;"></a>
+</p>
+
+[Demo Video](https://drive.google.com/file/d/1GMlyF2sPTK0R-4YXzwLxqQS9QfBTAJqg/view?usp=sharing)
 
 ## Setup
 
