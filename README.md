@@ -55,7 +55,8 @@ To run this sample on a HoloLens 2:
 6. Run through the wizard and wait for building and packaging to complete.
 7. [Deploy](https://docs.microsoft.com/en-us/hololens/holographic-custom-apps) the package to a HoloLens 2. Ensure you build your application using **ARM64**, see the topic [Unity 2019.3 and HoloLens](https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/BuildAndDeploy.html#unity-20193-and-hololens) for further details.
 8. Launch 'AppName' from the 'All Apps' list on the HoloLens 2!
-
+9. Use voice command "Update" first to preview the scene understanding results, then use your hand to push the **"Finish"** button to see AR scene. For more voice commands, please refer to **SceneUnderstandingMenu** game object.
+   
 ### Running on PC
 
 To run this sample on a PC:
@@ -64,13 +65,13 @@ To run this sample on a PC:
 2. Select the **SceneUnderstandingManager** game object and uncheck the **Query Scene From Device** checkbox on the **SceneUnderstandingManager Component**
 3. Ensure SU Serialized Scene Paths on the Scene Understanding component is referring to a serialized Scene Understanding scene, examples scenes are provided under the **MRTK_Scan** folder
 4. Click **Play** in the Editor
-5. Use WASD in the keyboard to control the pespective, move and aim the white dot at **Finish** button in the menu bar, click!
+5. Use WASD in the keyboard to control the pespective, move and aim the white dot at **"Finish"** button in the menu bar, click!
 
 ## Important Contents
 
 | File/folder | Description |
 |-------------|-------------|
-| `Resources` | 3D assets can be used in the AR Scene Graph's Prefab attribute. Be careful of the path of these models in **GraphGeneration.cs** file.|
+| `Resources` | 3D assets can be used in the AR Scene Graph's Prefab attribute, please put prefabs here. Be careful of the path of these models in **GraphGeneration.cs** file.|
 | `Scripts` | **GraphGeneration.cs** is the main file for editting the system, **ObjectNodeView.cs** is used for editting the attributes of each node in the graph, **ObjectNodeEditor.cs** is for editting the Inspetor of AR Scene Graph. |
 | `MRTK_Scan` | Scanned real scene examples using HoloLens, can be directly used in `SU Serialized Scene Path` of **SceneUnderstandingManager** game object.|
 | `Scene_Scan` | Scanned real scene models, can be used for visualization. |
