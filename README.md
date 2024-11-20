@@ -58,7 +58,7 @@ This repository is the official implementation of [**EverywhereAR**] under revie
 
 To run this sample on a HoloLens 2:
 
-1. Open this scene
+1. Open this scene in **Assets\SceneUnderstanding\Examples\Placement\Scenes**
 2. Select the **SceneUnderstandingManager** game object and make sure that **Query Scene From Device** is selected on the **SceneUnderstandingManager Component** in all Scenes.
 3. Go to **File > Build Settings** and select **Build > UWP**. Once the build completes successfully, a log indicating this will show up in the output console.
 4. Navigate to the **UWP** folder under root and open 'AppName.sln' in Visual Studio.
