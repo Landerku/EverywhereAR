@@ -3,7 +3,7 @@
 This repository is the official implementation of [**EverywhereAR**] under review in IEEE-TVCG.
 
 <p align="center" width="100%">
-<a target="_blank"><img src="figs/teaser.png" alt="EverywhereAR Overview" style="width: 60%; min-width: 200px; display: block; margin: auto;"></a>
+<a target="_blank"><img src="figs/teaser.pdf" alt="EverywhereAR Overview" style="width: 60%; min-width: 200px; display: block; margin: auto;"></a>
 </p>
 
 ## Introduction
