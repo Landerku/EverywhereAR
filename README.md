@@ -1,6 +1,6 @@
 <h2 align="center"> <a href="https://arxiv.org/abs/2402.13724">EverywhereAR: A Visual Authoring System for Creating Adaptive AR Game Scenes</a></h2>
 
-This repository is the official implementation of [**EverywhereAR**] under review in IEEE-TVCG.
+This repository is the official implementation of [**EverywhereAR**] published in IEEE-TVCG.
 
 <p align="center" width="100%">
 <a target="_blank"><img src="figs/teaser.png" alt="EverywhereAR Overview" style="width: 100%; min-width: 200px; display: block; margin: auto;"></a>
